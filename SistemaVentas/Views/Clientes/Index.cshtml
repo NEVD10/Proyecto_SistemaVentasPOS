@@ -1,0 +1,348 @@
+﻿@model SistemaVentas.Models.Paginador<SistemaVentas.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Gestión de Clientes";
+    var cadenaBusqueda = ViewData["CadenaBusquedaActual"] as string ?? "";
+    var tipoDocumento = ViewData["TipoDocumentoActual"] as string ?? "";
+    var numeroPagina = Model.NumeroPagina;
+    var tamanoPagina = Model.TamanoPagina;
+    var totalRegistros = Model.TotalRegistros;
+    var totalPaginas = Model.TotalPaginas;
+    var tienePaginaAnterior = Model.TienePaginaAnterior;
+    var tienePaginaSiguiente = Model.TienePaginaSiguiente;
+}
+
+<div class="container-fluid">
+    <!-- Header con título y estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="text-primary">
+                <i class="bi bi-people-fill me-2"></i>Gestión de Clientes
+            </h2>
+            <p class="text-muted">Administra la información de tus clientes</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="@Url.Action("Crear", "Clientes")" class="btn btn-success btn-lg">
+                <i class="bi bi-person-plus me-2"></i>Nuevo Cliente
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Total Clientes</h6>
+                            <h4 class="mb-0">@totalRegistros</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-people" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Clientes con Ventas</h6>
+                            <h4 class="mb-0">0</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-person-check" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Clientes Sin Ventas</h6>
+                            <h4 class="mb-0">0</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-person-dash" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Clientes en Página</h6>
+                            <h4 class="mb-0">@Model.Elementos.Count()</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-file-earmark-person" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel me-2"></i>Filtros de Búsqueda
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="Index" asp-controller="Clientes">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="buscar" class="form-label">Buscar Cliente</label>
+                        <input type="text" class="form-control" id="buscar" name="cadenaBusqueda"
+                               placeholder="Nombre, apellido, documento o teléfono..." value="@cadenaBusqueda">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="tipoDocumento" class="form-label">Tipo de Documento</label>
+                        <select class="form-control" id="tipoDocumento" name="tipoDocumento">
+                            <option value="">Todos los tipos</option>
+                            @{
+                                var tiposDocumento = new[] { "DNI", "RUC", "Pasaporte" }; // Lista de tipos de documento
+                                foreach (var tipo in tiposDocumento)
+                                {
+                                    <option value="@tipo" selected="@(tipo == tipoDocumento)">@tipo</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-5 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-search me-1"></i>Buscar
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Información de paginación -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <p class="text-muted mb-0">
+                Mostrando @((numeroPagina - 1) * tamanoPagina + 1) a 
+                @(Math.Min(numeroPagina * tamanoPagina, totalRegistros)) 
+                de @totalRegistros clientes
+            </p>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                    @tamanoPagina por página
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        tipoDocumento = tipoDocumento, 
+                        numeroPagina = 1, 
+                        tamanoPagina = 6 })">6 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        tipoDocumento = tipoDocumento, 
+                        numeroPagina = 1, 
+                        tamanoPagina = 12 })">12 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        tipoDocumento = tipoDocumento, 
+                        numeroPagina = 1, 
+                        tamanoPagina = 24 })">24 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        tipoDocumento = tipoDocumento, 
+                        numeroPagina = 1, 
+                        tamanoPagina = 48 })">48 por página</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Clientes -->
+    <div class="card shadow">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="bi bi-table me-2"></i>Clientes Registrados (@Model.Elementos.Count())
+            </h6>
+        </div>
+        <div class="card-body">
+            @if (Model.Elementos.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>
+                                    <i class="bi bi-person me-1"></i>Cliente
+                                </th>
+                                <th>
+                                    <i class="bi bi-card-heading me-1"></i>Documento
+                                </th>
+                                <th>
+                                    <i class="bi bi-phone me-1"></i>Teléfono
+                                </th>
+                                <th class="text-center">
+                                    <i class="bi bi-gear me-1"></i>Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cliente in Model.Elementos)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-primary rounded-circle me-3">
+                                                <i class="bi bi-person text-white"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">@cliente.Nombres @cliente.Apellidos</h6>
+                                                <small class="text-muted">ID: @cliente.IdCliente</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <code>@cliente.TipoDocumento: @cliente.NumeroDocumento</code>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(cliente.Telefono))
+                                        {
+                                            <span class="text-success">
+                                                <i class="bi bi-telephone me-1"></i>@cliente.Telefono
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                <i class="bi bi-dash-circle"></i> No registrado
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Editar" asp-route-id="@cliente.IdCliente"
+                                               class="btn btn-outline-warning btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="Eliminar" asp-route-id="@cliente.IdCliente"
+                                               class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-people display-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">No se encontraron clientes</h4>
+                    <p class="text-muted">
+                        @if (!string.IsNullOrEmpty(cadenaBusqueda) || !string.IsNullOrEmpty(tipoDocumento))
+                        {
+                            <span>No hay clientes que coincidan con los filtros aplicados.</span>
+                            <br>
+                            <a asp-action="Index" class="btn btn-outline-primary mt-2">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Ver todos los clientes
+                            </a>
+                        }
+                        else
+                        {
+                            <span>Aún no hay clientes registrados en el sistema.</span>
+                            <br>
+                            <a asp-action="Crear" class="btn btn-primary mt-2">
+                                <i class="bi bi-person-plus me-1"></i>Registrar primer cliente
+                            </a>
+                        }
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Controles de paginación -->
+    @if (totalPaginas > 1)
+    {
+        <nav aria-label="Paginación de clientes" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Botón Anterior -->
+                <li class="page-item @(tienePaginaAnterior ? "" : "disabled")">
+                    <a class="page-link" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        tipoDocumento = tipoDocumento, 
+                        numeroPagina = numeroPagina - 1, 
+                        tamanoPagina = tamanoPagina })">
+                        <i class="bi bi-chevron-left"></i> Anterior
+                    </a>
+                </li>
+
+                <!-- Números de página -->
+                @{
+                    int inicio = Math.Max(1, numeroPagina - 2);
+                    int fin = Math.Min(totalPaginas, numeroPagina + 2);
+
+                    if (totalPaginas > 5)
+                    {
+                        if (numeroPagina <= 3)
+                        {
+                            fin = 5;
+                        }
+                        else if (numeroPagina >= totalPaginas - 2)
+                        {
+                            inicio = totalPaginas - 4;
+                        }
+                    }
+                }
+
+                @for (int i = inicio; i <= fin; i++)
+                {
+                    <li class="page-item @(i == numeroPagina ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { 
+                            cadenaBusqueda = cadenaBusqueda, 
+                            tipoDocumento = tipoDocumento, 
+                            numeroPagina = i, 
+                            tamanoPagina = tamanoPagina })">@i</a>
+                    </li>
+                }
+
+                <!-- Botón Siguiente -->
+                <li class="page-item @(tienePaginaSiguiente ? "" : "disabled")">
+                    <a class="page-link" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        tipoDocumento = tipoDocumento, 
+                        numeroPagina = numeroPagina + 1, 
+                        tamanoPagina = tamanoPagina })">
+                        Siguiente <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <p class="text-center text-muted mt-4">No hay suficientes clientes para paginar.</p>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

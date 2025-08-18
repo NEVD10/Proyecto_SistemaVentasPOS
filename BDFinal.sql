@@ -1,0 +1,84 @@
+CREATE DATABASE SistemaVentasSimple;
+GO
+
+USE SistemaVentasSimple;
+GO
+
+-- Tabla Cliente
+CREATE TABLE Cliente (
+    IdCliente INT PRIMARY KEY IDENTITY(1,1),
+    TipoDocumento VARCHAR(15) NOT NULL,  -- DNI/RUC/Carnet Extranjería
+    NumeroDocumento VARCHAR(12) UNIQUE NOT NULL,
+    Nombres VARCHAR(30) NOT NULL,
+    Apellidos VARCHAR(60),
+    Telefono VARCHAR(9),
+    Email VARCHAR(100),
+    Direccion VARCHAR(100),
+    FechaRegistro DATETIME DEFAULT GETDATE(),
+);
+GO
+
+-- Tabla Usuario
+CREATE TABLE Usuario (
+    IdUsuario INT PRIMARY KEY IDENTITY(1,1),
+    NombreUsuario VARCHAR(20) UNIQUE NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,
+    NombreCompleto VARCHAR(100) NOT NULL,
+    Rol VARCHAR(15) NOT NULL CHECK (Rol IN ('Administrador', 'Vendedor', 'Almacen')),
+    Email VARCHAR(100),
+    Estado BIT DEFAULT 1
+);
+GO
+
+-- Tabla Producto
+CREATE TABLE Producto (
+    IdProducto INT PRIMARY KEY IDENTITY(1,1),
+    Nombre VARCHAR(100) NOT NULL,
+    CodigoBarras VARCHAR(50) UNIQUE,
+    PrecioCosto DECIMAL(10, 2) NOT NULL,
+    PrecioVenta DECIMAL(10, 2) NOT NULL,
+    Stock INT NOT NULL DEFAULT 0,
+    Marca VARCHAR(30),
+    Categoria VARCHAR(30),               --HAy catergoria de ropa, electrodomestico, y mas
+    Estado BIT DEFAULT 1,
+    CHECK (PrecioVenta > PrecioCosto),
+    CHECK (Stock >= 0)
+);
+GO
+
+-- Tabla Venta
+CREATE TABLE Venta (
+    IdVenta INT PRIMARY KEY IDENTITY(1,1),
+    FechaVenta DATETIME DEFAULT GETDATE(),
+    TipoComprobante VARCHAR(20) NOT NULL ,  -- Boleta/Factura
+    NumeroComprobante VARCHAR(20),
+    Subtotal DECIMAL(10, 2) NOT NULL,
+    MontoIGV DECIMAL(10, 2) NOT NULL DEFAULT 0,  -- 18% en Perú, por ejemplo
+    MontoTotal DECIMAL(10, 2) NOT NULL,
+    MetodoPago VARCHAR(20) NOT NULL DEFAULT 'Efectivo',  -- Efectivo/Tarjeta/Yape/Transferencia
+    IdCliente INT,
+    IdUsuario INT NOT NULL,
+    FOREIGN KEY (IdCliente) REFERENCES Cliente(IdCliente),
+    FOREIGN KEY (IdUsuario) REFERENCES Usuario(IdUsuario)
+);
+GO
+
+-- Tabla DetalleVenta (versión optimizada)
+CREATE TABLE DetalleVenta (
+    IdDetalleVenta INT PRIMARY KEY IDENTITY(1,1),
+    IdVenta INT NOT NULL,
+    IdProducto INT NOT NULL,
+    Cantidad INT NOT NULL CHECK (Cantidad > 0),
+    PrecioUnitario DECIMAL(10, 2) NOT NULL,
+    SubtotalLinea DECIMAL(10, 2) NOT NULL,  -- Cantidad * PrecioUnitario
+    FOREIGN KEY (IdVenta) REFERENCES Venta(IdVenta) ON DELETE CASCADE,
+    FOREIGN KEY (IdProducto) REFERENCES Producto(IdProducto)
+);
+GO
+
+-- Índices para mejorar rendimiento
+CREATE INDEX IX_Cliente_Documento ON Cliente(NumeroDocumento);
+CREATE INDEX IX_Producto_CodigoBarras ON Producto(CodigoBarras);
+CREATE INDEX IX_Venta_Fecha ON Venta(FechaVenta);
+CREATE INDEX IX_DetalleVenta_Venta ON DetalleVenta(IdVenta);
+GO

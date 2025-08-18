@@ -1,0 +1,171 @@
+﻿@model SistemaVentas.Models.Cliente
+
+@{
+    ViewData["Title"] = "Crear Cliente";
+}
+
+<div class="container-fluid">
+    <!-- Header con título y botón volver -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="text-primary">
+                <i class="bi bi-person-plus-fill me-2"></i>Crear Nuevo Cliente
+            </h2>
+            <p class="text-muted">Registra un nuevo cliente en el sistema</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-arrow-left-circle me-2"></i>Volver a la lista
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas como en Index -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Clientes</h6>
+                        <h4 class="mb-0">@(ViewBag.TotalClientes ?? 0)</h4>
+                    </div>
+                    <i class="bi bi-people fs-2 align-self-center"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Clientes con Ventas</h6>
+                        <h4 class="mb-0">@(ViewBag.ClientesConVentas ?? 0)</h4>
+                    </div>
+                    <i class="bi bi-person-check fs-2 align-self-center"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Clientes Sin Ventas</h6>
+                        <h4 class="mb-0">@(ViewBag.ClientesSinVentas ?? 0)</h4>
+                    </div>
+                    <i class="bi bi-person-dash fs-2 align-self-center"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Registrando</h6>
+                        <h4 class="mb-0">Nuevo</h4>
+                    </div>
+                    <i class="bi bi-file-earmark-person fs-2 align-self-center"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card principal con formulario -->
+    <div class="card shadow">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary text-white">
+            <h6 class="m-0 font-weight-bold">
+                <i class="bi bi-ui-checks-grid me-2"></i>Datos del Cliente
+            </h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Crear">
+                <!-- Validaciones -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="row g-3">
+                    <!-- Tipo Documento -->
+                    <div class="col-md-6">
+                        <label asp-for="TipoDocumento" class="form-label">
+                            <i class="bi bi-card-heading me-1 text-primary"></i>Tipo de Documento
+                        </label>
+                        <select asp-for="TipoDocumento" class="form-control">
+                            <option value="">Seleccione...</option>
+                            <option value="DNI">DNI</option>
+                            <option value="RUC">RUC</option>
+                            <option value="Pasaporte">Pasaporte</option>
+                        </select>
+                        <span asp-validation-for="TipoDocumento" class="text-danger"></span>
+                    </div>
+
+                    <!-- Número Documento -->
+                    <div class="col-md-6">
+                        <label asp-for="NumeroDocumento" class="form-label">
+                            <i class="bi bi-hash me-1 text-primary"></i>Número de Documento
+                        </label>
+                        <input asp-for="NumeroDocumento" class="form-control" placeholder="Ingrese número de documento" />
+                        <span asp-validation-for="NumeroDocumento" class="text-danger"></span>
+                    </div>
+
+                    <!-- Nombres -->
+                    <div class="col-md-6">
+                        <label asp-for="Nombres" class="form-label">
+                            <i class="bi bi-person me-1 text-primary"></i>Nombres
+                        </label>
+                        <input asp-for="Nombres" class="form-control" placeholder="Ingrese nombres" />
+                        <span asp-validation-for="Nombres" class="text-danger"></span>
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div class="col-md-6">
+                        <label asp-for="Apellidos" class="form-label">
+                            <i class="bi bi-person-vcard me-1 text-primary"></i>Apellidos
+                        </label>
+                        <input asp-for="Apellidos" class="form-control" placeholder="Ingrese apellidos" />
+                        <span asp-validation-for="Apellidos" class="text-danger"></span>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="col-md-6">
+                        <label asp-for="Telefono" class="form-label">
+                            <i class="bi bi-telephone me-1 text-primary"></i>Teléfono
+                        </label>
+                        <input asp-for="Telefono" class="form-control" placeholder="Ej. +51 987654321" />
+                        <span asp-validation-for="Telefono" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">
+                            <i class="bi bi-envelope me-1 text-primary"></i>Correo Electrónico
+                        </label>
+                        <input asp-for="Email" class="form-control" placeholder="correo@ejemplo.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="col-md-12">
+                        <label asp-for="Direccion" class="form-label">
+                            <i class="bi bi-geo-alt me-1 text-primary"></i>Dirección
+                        </label>
+                        <input asp-for="Direccion" class="form-control" placeholder="Ingrese dirección completa" />
+                        <span asp-validation-for="Direccion" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-save me-2"></i>Crear Cliente
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-x-circle me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

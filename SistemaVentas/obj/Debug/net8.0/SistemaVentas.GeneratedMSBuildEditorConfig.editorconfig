@@ -1,0 +1,121 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = SistemaVentas
+build_property.RootNamespace = SistemaVentas
+build_property.ProjectDir = C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Clientes/Crear.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZXNcQ3JlYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Clientes/Editar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZXNcRWRpdGFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Clientes/Eliminar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZXNcRWxpbWluYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Clientes/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Productos/Crear.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXENyZWFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Productos/Editar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXEVkaXRhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Productos/Eliminar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXEVsaW1pbmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Productos/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Reportes/Diario.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0ZXNcRGlhcmlvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Reportes/Mensual.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0ZXNcTWVuc3VhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Usuarios/AccesoDenegado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcQWNjZXNvRGVuZWdhZG8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Usuarios/IniciarSesion.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcSW5pY2lhclNlc2lvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Usuarios/Registrar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcUmVnaXN0cmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Ventas/Factura.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFzXEZhY3R1cmEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Ventas/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Ventas/NuevaVenta.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFzXE51ZXZhVmVudGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/VALDIVIA/Desktop/Nueva carpeta/SISTEMAVENTAS/SISTEMAVENTAS/SistemaVentas/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-hh7t54o8my

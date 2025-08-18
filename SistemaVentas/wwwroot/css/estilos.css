@@ -1,0 +1,58 @@
+﻿/* Estilos para la tabla */
+.table th {
+    font-weight: bold;
+    text-align: center;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.avatar-sm {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-body h4 {
+    font-size: 1.5rem;
+}
+
+/* Estilos para la paginación */
+.pagination .page-link {
+    color: #007bff;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.9em;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    .avatar-sm {
+        width: 2rem;
+        height: 2rem;
+    }
+}
