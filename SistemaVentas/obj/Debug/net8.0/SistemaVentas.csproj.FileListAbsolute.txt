@@ -267,3 +267,4 @@ C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVenta
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\obj\Debug\net8.0\SistemaVentas.pdb
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\obj\Debug\net8.0\SistemaVentas.genruntimeconfig.cache
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\obj\Debug\net8.0\ref\SistemaVentas.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\obj\Debug\net8.0\SistemaVentas.sourcelink.json

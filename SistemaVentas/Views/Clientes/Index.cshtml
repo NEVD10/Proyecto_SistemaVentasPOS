@@ -4,6 +4,7 @@
     ViewData["Title"] = "Gestión de Clientes";
     var cadenaBusqueda = ViewData["CadenaBusquedaActual"] as string ?? "";
     var tipoDocumento = ViewData["TipoDocumentoActual"] as string ?? "";
+    var numTotalClientes = (int)(ViewData["TotalClientes"]);
     var numeroPagina = Model.NumeroPagina;
     var tamanoPagina = Model.TamanoPagina;
     var totalRegistros = Model.TotalRegistros;
@@ -36,7 +37,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h6 class="card-title">Total Clientes</h6>
-                            <h4 class="mb-0">@totalRegistros</h4>
+                            <h4 class="mb-0">@numTotalClientes</h4>
                         </div>
                         <div class="align-self-center">
                             <i class="bi bi-people" style="font-size: 2rem;"></i>
@@ -112,7 +113,7 @@
                         <select class="form-control" id="tipoDocumento" name="tipoDocumento">
                             <option value="">Todos los tipos</option>
                             @{
-                                var tiposDocumento = new[] { "DNI", "RUC", "Pasaporte" }; // Lista de tipos de documento
+                                var tiposDocumento = new[] { "DNI", "RUC", "Carnet Extranjería" }; // Lista de tipos de documento
                                 foreach (var tipo in tiposDocumento)
                                 {
                                     <option value="@tipo" selected="@(tipo == tipoDocumento)">@tipo</option>

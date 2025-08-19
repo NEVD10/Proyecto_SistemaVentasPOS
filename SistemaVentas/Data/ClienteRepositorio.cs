@@ -51,6 +51,12 @@ namespace SistemaVentas.Data
             };
         }
 
+        public async Task<int> ObtenerTotalClientes()
+        {
+            using var connection = new SqlConnection(_connectionString);
+            return await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Cliente");
+        }
+
         public async Task<Cliente> ObtenerPorId(int id)
         {
             using var connection = new SqlConnection(_connectionString);

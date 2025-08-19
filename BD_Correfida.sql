@@ -1,7 +1,7 @@
-CREATE DATABASE SistemaVentasSimple;
+CREATE DATABASE SistemaVentasS;
 GO
 
-USE SistemaVentasSimple;
+USE SistemaVentasS;
 GO
 
 -- Tabla Cliente
@@ -82,3 +82,9 @@ CREATE INDEX IX_Producto_CodigoBarras ON Producto(CodigoBarras);
 CREATE INDEX IX_Venta_Fecha ON Venta(FechaVenta);
 CREATE INDEX IX_DetalleVenta_Venta ON DetalleVenta(IdVenta);
 GO
+
+SELECT *FROM Cliente
+
+
+SELECT FORMAT(FechaRegistro, 'dd/MM/yyyy HH:mm:ss') AS FechaFormateada
+FROM Cliente;

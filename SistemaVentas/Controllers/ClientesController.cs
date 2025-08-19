@@ -17,8 +17,10 @@ namespace SistemaVentas.Controllers
         public async Task<IActionResult> Index(int numeroPagina = 1, string cadenaBusqueda = null, string tipoDocumento = null, int tamanoPagina = 15)
         {
             var paginador = await _repositorio.ObtenerTodos(numeroPagina, tamanoPagina, cadenaBusqueda, tipoDocumento);
+            var totalClientes = await _repositorio.ObtenerTotalClientes();
             ViewData["CadenaBusquedaActual"] = cadenaBusqueda;
             ViewData["TipoDocumentoActual"] = tipoDocumento; // Para mantener el valor seleccionado
+            ViewData["TotalClientes"] = totalClientes;// Pasamos el total de clientes
             return View(paginador);
         }
 
