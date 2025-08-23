@@ -1,5 +1,337 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Paginador<SistemaVentas.Models.Producto>
+
 @{
+    ViewData["Title"] = "Gestión de Productos";
+    var cadenaBusqueda = ViewData["CadenaBusquedaActual"] as string ?? "";
+    var estado = ViewData["EstadoActual"] as bool?;
+    var numeroPagina = Model.NumeroPagina;
+    var tamanoPagina = Model.TamanoPagina;
+    var totalRegistros = Model.TotalRegistros;
+    var totalPaginas = Model.TotalPaginas;
+    var tienePaginaAnterior = Model.TienePaginaAnterior;
+    var tienePaginaSiguiente = Model.TienePaginaSiguiente;
+    var productosEnStock = Model.Elementos.Count(p => p.Stock > 0);
+    var productosSinStock = Model.Elementos.Count(p => p.Stock == 0);
+}
+
+<div class="container-fluid">
+    <!-- Header con título y estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="text-primary">
+                <i class="bi bi-box-seam me-2"></i>Gestión de Productos
+            </h2>
+            <p class="text-muted">Administra los productos de tu inventario</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="@Url.Action("Crear", "Productos")" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>Nuevo Producto
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Total Productos</h6>
+                            <h4 class="mb-0">@totalRegistros</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-boxes" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Productos en Stock</h6>
+                            <h4 class="mb-0">@productosEnStock</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-box-seam" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Productos Sin Stock</h6>
+                            <h4 class="mb-0">@productosSinStock</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-box-arrow-down" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel me-2"></i>Filtros de Búsqueda
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="Index" asp-controller="Productos">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="buscar" class="form-label">Buscar Producto</label>
+                        <input type="text" class="form-control" id="buscar" name="cadenaBusqueda"
+                               placeholder="Nombre, código o descripción..." value="@cadenaBusqueda">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="estado" class="form-label">Estado</label>
+                        <select class="form-select" id="estado" name="estado">
+                            <option value="">Todos</option>
+                            <option value="true" selected="@(estado == true ? "selected" : null)">Activos</option>
+                            <option value="false" selected="@(estado == false ? "selected" : null)">Inactivos</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2 w-100">
+                            <i class="bi bi-search me-1"></i>Buscar
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Información de paginación -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <p class="text-muted mb-0">
+                Mostrando @((numeroPagina - 1) * tamanoPagina + 1) a
+                @(Math.Min(numeroPagina * tamanoPagina, totalRegistros))
+                de @totalRegistros productos
+            </p>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                    @tamanoPagina por página
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        estado = estado, 
+                        numeroPagina = 1, 
+                        tamanoPagina = 6 })">6 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        estado = estado, 
+                        numeroPagina = 1, 
+                        tamanoPagina = 12 })">12 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        estado = estado, 
+                        numeroPagina = 1, 
+                        tamanoPagina = 24 })">24 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        estado = estado, 
+                        numeroPagina = 1, 
+                        tamanoPagina = 48 })">48 por página</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Productos -->
+    <div class="card shadow">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="bi bi-table me-2"></i>Productos Registrados (@Model.Elementos.Count())
+            </h6>
+        </div>
+        <div class="card-body">
+            @if (Model.Elementos.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>
+                                    <i class="bi bi-tag me-1"></i>Producto
+                                </th>
+                                <th>
+                                    <i class="bi bi-upc-scan me-1"></i>Código de Barras
+                                </th>
+                                <th>
+                                    <i class="bi bi-currency-dollar me-1"></i>Precio Costo
+                                </th>
+                                <th>
+                                    <i class="bi bi-currency-dollar me-1"></i>Precio Venta
+                                </th>
+                                <th>
+                                    <i class="bi bi-box me-1"></i>Stock
+                                </th>
+                                <th>
+                                    <i class="bi bi-tag-fill me-1"></i>Categoría
+                                </th>
+                                <th>
+                                    <i class="bi bi-check-circle me-1"></i>Estado
+                                </th>
+                                <th class="text-center">
+                                    <i class="bi bi-gear me-1"></i>Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var producto in Model.Elementos)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-primary rounded-circle me-3">
+                                                <i class="bi bi-box text-white"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">@producto.Nombre</h6>
+                                                <small class="text-muted">ID: @producto.IdProducto</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <code>@producto.CodigoBarras</code>
+                                    </td>
+                                    <td>
+                                        S/. @producto.PrecioCosto.ToString("N2")
+                                    </td>
+                                    <td>
+                                        S/. @producto.PrecioVenta.ToString("N2")
+                                    </td>
+                                    <td>
+                                        @producto.Stock
+                                    </td>
+                                    <td>
+                                       @(producto.Categoria?.Nombre ?? "Sin categoría")
+                                    </td>
+                                    <td>
+                                        @(producto.Estado ? "Activo" : "Inactivo")
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Editar" asp-route-id="@producto.IdProducto"
+                                               class="btn btn-outline-warning btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="Eliminar" asp-route-id="@producto.IdProducto"
+                                               class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-box display-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">No se encontraron productos</h4>
+                    <p class="text-muted">
+                        @if (!string.IsNullOrEmpty(cadenaBusqueda) || estado.HasValue)
+                        {
+                            <span>No hay productos que coincidan con los filtros aplicados.</span><br>
+                            <a asp-action="Index" class="btn btn-outline-primary mt-2">Ver todos los productos</a>
+                        }
+                        else
+                        {
+                            <span>Aún no hay productos registrados en el sistema.</span><br>
+                            <a asp-action="Crear" class="btn btn-primary mt-2">Registrar primer producto</a>
+                        }
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Controles de paginación -->
+    @if (totalPaginas > 1)
+    {
+        <nav aria-label="Paginación de productos" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Botón Anterior -->
+                <li class="page-item @(tienePaginaAnterior ? "" : "disabled")">
+                    <a class="page-link" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        estado = estado, 
+                        numeroPagina = numeroPagina - 1, 
+                        tamanoPagina = tamanoPagina })">
+                        <i class="bi bi-chevron-left"></i> Anterior
+                    </a>
+                </li>
+
+                <!-- Números de página -->
+                @{
+                    int inicio = Math.Max(1, numeroPagina - 2);
+                    int fin = Math.Min(totalPaginas, numeroPagina + 2);
+
+                    if (totalPaginas > 5)
+                    {
+                        if (numeroPagina <= 3)
+                        {
+                            fin = 5;
+                        }
+                        else if (numeroPagina >= totalPaginas - 2)
+                        {
+                            inicio = totalPaginas - 4;
+                        }
+                    }
+                }
+
+                @for (int i = inicio; i <= fin; i++)
+                {
+                    <li class="page-item @(i == numeroPagina ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { 
+                            cadenaBusqueda = cadenaBusqueda, 
+                            estado = estado, 
+                            numeroPagina = i, 
+                            tamanoPagina = tamanoPagina })">@i</a>
+                    </li>
+                }
+
+                <!-- Botón Siguiente -->
+                <li class="page-item @(tienePaginaSiguiente ? "" : "disabled")">
+                    <a class="page-link" href="@Url.Action("Index", new { 
+                        cadenaBusqueda = cadenaBusqueda, 
+                        estado = estado, 
+                        numeroPagina = numeroPagina + 1, 
+                        tamanoPagina = tamanoPagina })">
+                        Siguiente <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <p class="text-center text-muted mt-4">No hay suficientes productos para paginar.</p>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -13,17 +13,26 @@ builder.Services.AddDbContext<DBContexto>(options =>
 
 // Add repository
 builder.Services.AddScoped<ClienteRepositorio>();
+builder.Services.AddScoped<ProductoRepositorio>();
 
 var app = builder.Build();
 
 // Crear base de datos y sembrar datos iniciales
 using (var scope = app.Services.CreateScope())
 {
-    var servicio = scope.ServiceProvider;
-    var contexto = servicio.GetRequiredService<DBContexto>();
-    contexto.Database.EnsureCreated();
-
+    var contexto = scope.ServiceProvider.GetRequiredService<DBContexto>();
+    try
+    {
+        contexto.Database.EnsureCreated();
+    }
+    catch (Exception ex)
+    {
+        // Registrar el error para depuración
+        Console.WriteLine($"Error al crear la base de datos: {ex.Message}");
+        throw;
+    }
 }
+
 
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();

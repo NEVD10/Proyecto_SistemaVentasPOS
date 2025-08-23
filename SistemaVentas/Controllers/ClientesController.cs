@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SistemaVentas.Data;
 using SistemaVentas.Models;
+using Microsoft.Data.SqlClient;
 
 namespace SistemaVentas.Controllers
 {
@@ -16,11 +17,11 @@ namespace SistemaVentas.Controllers
         // GET: Clientes
         public async Task<IActionResult> Index(int numeroPagina = 1, string cadenaBusqueda = null, string tipoDocumento = null, int tamanoPagina = 15)
         {
-            var paginador = await _repositorio.ObtenerTodos(numeroPagina, tamanoPagina, cadenaBusqueda, tipoDocumento);
             var totalClientes = await _repositorio.ObtenerTotalClientes();
+            var paginador = await _repositorio.ObtenerTodos(numeroPagina, tamanoPagina, cadenaBusqueda, tipoDocumento);
             ViewData["CadenaBusquedaActual"] = cadenaBusqueda;
-            ViewData["TipoDocumentoActual"] = tipoDocumento; // Para mantener el valor seleccionado
-            ViewData["TotalClientes"] = totalClientes;// Pasamos el total de clientes
+            ViewData["TipoDocumentoActual"] = tipoDocumento;
+            ViewData["TotalClientes"] = totalClientes;
             return View(paginador);
         }
 
@@ -44,7 +45,7 @@ namespace SistemaVentas.Controllers
                 }
                 catch (InvalidOperationException ex)
                 {
-                    ModelState.AddModelError("NumeroDocumento", ex.Message);
+                    ModelState.AddModelError(string.Empty, ex.Message); // Mensaje general si es necesario
                 }
             }
             return View(cliente);
@@ -80,7 +81,7 @@ namespace SistemaVentas.Controllers
                 }
                 catch (InvalidOperationException ex)
                 {
-                    ModelState.AddModelError("NumeroDocumento", ex.Message);
+                    ModelState.AddModelError(string.Empty, ex.Message); // Mensaje general si es necesario
                 }
             }
             return View(cliente);
@@ -102,8 +103,31 @@ namespace SistemaVentas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EliminarConfirmado(int id)
         {
-            await _repositorio.Eliminar(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _repositorio.Eliminar(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex) when (ex.Number == 547) // Error 547 indica violación de restricción de clave foránea
+            {
+                ViewBag.ErrorMessage = "No se pudo eliminar el cliente porque tiene ventas asociadas. Elimine primero las ventas relacionadas.";
+                var cliente = await _repositorio.ObtenerPorId(id);
+                if (cliente == null)
+                {
+                    return NotFound();
+                }
+                return View("Eliminar", cliente); // Regresar a la vista de eliminación con el error
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Ocurrió un error inesperado: {ex.Message}";
+                var cliente = await _repositorio.ObtenerPorId(id);
+                if (cliente == null)
+                {
+                    return NotFound();
+                }
+                return View("Eliminar", cliente);
+            }
         }
     }
 }

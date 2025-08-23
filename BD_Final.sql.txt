@@ -7,14 +7,14 @@ GO
 -- Tabla Cliente
 CREATE TABLE Cliente (
     IdCliente INT PRIMARY KEY IDENTITY(1,1),
-    TipoDocumento VARCHAR(20) NOT NULL,  -- DNI/RUC/Carnet ExtranjerÌa
+    TipoDocumento VARCHAR(20) NOT NULL,  -- DNI/RUC/Carnet Extranjer√≠a
     NumeroDocumento VARCHAR(12) UNIQUE NOT NULL,
     Nombres VARCHAR(30) NOT NULL,
     Apellidos VARCHAR(60),
     Telefono VARCHAR(9),
     Email VARCHAR(100),
     Direccion VARCHAR(100),
-    FechaRegistro DATETIME DEFAULT GETDATE(),
+    FechaRegistro DATETIME DEFAULT GETDATE()
 );
 GO
 
@@ -30,10 +30,17 @@ CREATE TABLE Usuario (
 );
 GO
 
--- Tabla Producto
+-- Primero crear la tabla Categoria (se necesita antes de Producto)
+CREATE TABLE Categoria (
+    IdCategoria INT PRIMARY KEY IDENTITY(1,1),
+    Nombre VARCHAR(30) NOT NULL
+);
+GO
+
+-- Tabla Producto (corregida la definici√≥n de IdCategoria)
 CREATE TABLE Producto (
     IdProducto INT PRIMARY KEY IDENTITY(1,1),
-    IdCategoria INT;
+    IdCategoria INT,  -- Corregido: se quit√≥ el punto y coma
     Nombre VARCHAR(100) NOT NULL,
     CodigoBarras VARCHAR(50) UNIQUE,
     PrecioCosto DECIMAL(10, 2) NOT NULL,
@@ -41,24 +48,20 @@ CREATE TABLE Producto (
     Stock INT NOT NULL DEFAULT 0,
     Marca VARCHAR(30),
     Estado BIT DEFAULT 1,
+    FOREIGN KEY (IdCategoria) REFERENCES Categoria(IdCategoria),  -- Agregada la FK
     CHECK (PrecioVenta > PrecioCosto),
     CHECK (Stock >= 0)
 );
 GO
 
-CREATE TABLE Categoria (
-    IdCategoria INT PRIMARY KEY IDENTITY(1,1),
-    Nombre VARCHAR(30) NOT NULL
-);
-
--- Tabla Venta
+-- Tabla Venta (corregido el DEFAULT para MetodoPago)
 CREATE TABLE Venta (
     IdVenta INT PRIMARY KEY IDENTITY(1,1),
     FechaVenta DATETIME DEFAULT GETDATE(),
-    TipoComprobante VARCHAR(20) NOT NULL ,  -- Boleta/Factura
+    TipoComprobante VARCHAR(20) NOT NULL,  -- Boleta/Factura (quitada coma extra)
     NumeroComprobante VARCHAR(20),
     Subtotal DECIMAL(10, 2) NOT NULL,
-    MontoIGV DECIMAL(10, 2) NOT NULL DEFAULT 0,  -- 18% en Per˙, por ejemplo
+    MontoIGV DECIMAL(10, 2) NOT NULL DEFAULT 0,  -- 18% en Per√∫, por ejemplo
     MontoTotal DECIMAL(10, 2) NOT NULL,
     MetodoPago VARCHAR(20) NOT NULL DEFAULT 'Efectivo',  -- Efectivo/Tarjeta/Yape/Transferencia
     IdCliente INT,
@@ -68,7 +71,7 @@ CREATE TABLE Venta (
 );
 GO
 
--- Tabla DetalleVenta (versiÛn optimizada)
+-- Tabla DetalleVenta (versi√≥n optimizada)
 CREATE TABLE DetalleVenta (
     IdDetalleVenta INT PRIMARY KEY IDENTITY(1,1),
     IdVenta INT NOT NULL,
@@ -81,20 +84,9 @@ CREATE TABLE DetalleVenta (
 );
 GO
 
--- Õndices para mejorar rendimiento
+-- √çndices para mejorar rendimiento
 CREATE INDEX IX_Cliente_Documento ON Cliente(NumeroDocumento);
 CREATE INDEX IX_Producto_CodigoBarras ON Producto(CodigoBarras);
 CREATE INDEX IX_Venta_Fecha ON Venta(FechaVenta);
 CREATE INDEX IX_DetalleVenta_Venta ON DetalleVenta(IdVenta);
 GO
-
-SELECT *FROM Cliente
-SELECT *FROM Venta
-SELECT *FROM DetalleVenta
-SELECT *FROM Producto
-
-
-
-
-SELECT FORMAT(FechaRegistro, 'dd/MM/yyyy HH:mm:ss') AS FechaFormateada
-FROM Cliente;

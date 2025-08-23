@@ -1,5 +1,83 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model SistemaVentas.Models.Producto
+
 @{
+    ViewData["Title"] = "Eliminar Producto";
+}
+
+<div class="dashboard-content">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-danger">
+                <i class="bi bi-trash-fill me-2"></i>Eliminar Producto
+            </h1>
+            <p class="mb-0 text-muted">Confirma la eliminación del producto</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Volver a la Lista
+            </a>
+        </div>
+    </div>
+
+    <!-- Contenido de Eliminación -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-danger text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Confirmar Eliminación
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger mb-3" role="alert">
+                            @ViewBag.ErrorMessage
+                            <a asp-action="Index" class="btn btn-sm btn-outline-primary mt-2">Volver a la Lista</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div class="avatar-lg bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mb-3">
+                                    <i class="bi bi-trash" style="font-size: 3rem;"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="card-title">@Model.Nombre</h5>
+                                <p class="card-text">
+                                    <strong>Código:</strong> @Model.CodigoBarras<br>
+                                    <strong>Precio Costo:</strong> S/. @Model.PrecioCosto.ToString("N2")<br>
+                                    <strong>Precio Venta:</strong> S/. @Model.PrecioVenta.ToString("N2")<br>
+                                    <strong>Stock:</strong> @Model.Stock<br>
+                                    <strong>Categoría:</strong> @(Model.Categoria?.Nombre ?? "Sin categoría")<br>
+                                    <strong>Estado:</strong> @(Model.Estado ? "Activo" : "Inactivo")
+                                </p>
+                            </div>
+                        </div>
+                        <form asp-action="Eliminar" method="post">
+                            @Html.AntiForgeryToken() <!-- Agrega el token antifalsificación -->
+                            <input type="hidden" asp-for="IdProducto" />
+                            <div class="mt-4 d-flex justify-content-between">
+                                <a asp-action="Index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-1"></i>Eliminar
+                                </button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

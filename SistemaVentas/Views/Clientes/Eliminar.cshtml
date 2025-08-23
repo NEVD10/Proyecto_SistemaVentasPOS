@@ -1,70 +1,81 @@
-﻿<!-- Views/Clientes/Eliminar.cshtml -->
-@model SistemaVentas.Models.Cliente
+﻿@model SistemaVentas.Models.Cliente
 
 @{
     ViewData["Title"] = "Eliminar Cliente";
 }
 
-<h1>Eliminar Cliente</h1>
+<div class="dashboard-content">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-danger">
+                <i class="bi bi-trash-fill me-2"></i>Eliminar Cliente
+            </h1>
+            <p class="mb-0 text-muted">Confirma la eliminación del cliente</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Volver a la Lista
+            </a>
+        </div>
+    </div>
 
-<h3>¿Estás seguro de que quieres eliminar este cliente?</h3>
-<div>
-    <h4>Cliente</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoDocumento)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TipoDocumento)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NumeroDocumento)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NumeroDocumento)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombres)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nombres)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Apellidos)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Apellidos)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefono)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Telefono)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Direccion)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Direccion)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaRegistro)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FechaRegistro)
-        </dd>
-    </dl>
-
-    <form asp-action="Eliminar">
-        <input type="hidden" asp-for="IdCliente" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver a la lista</a>
-    </form>
+    <!-- Contenido de Eliminación -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header py-3 bg-danger text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Confirmar Eliminación
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                    {
+                        <div class="alert alert-danger mb-3" role="alert">
+                            @ViewBag.ErrorMessage
+                            <a asp-action="Index" class="btn btn-sm btn-outline-primary mt-2">Volver a la Lista</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div class="avatar-lg bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mb-3">
+                                    <i class="bi bi-person-x" style="font-size: 3rem;"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="card-title">@Model.Nombres @Model.Apellidos</h5>
+                                <p class="card-text">
+                                    <strong>Documento:</strong> @Model.TipoDocumento: @Model.NumeroDocumento<br>
+                                    <strong>Teléfono:</strong> @(!string.IsNullOrEmpty(Model.Telefono) ? Model.Telefono : "No registrado")<br>
+                                    <strong>Email:</strong> @(!string.IsNullOrEmpty(Model.Email) ? Model.Email : "No registrado")<br>
+                                    <strong>Dirección:</strong> @(!string.IsNullOrEmpty(Model.Direccion) ? Model.Direccion : "No registrada")
+                                </p>
+                            </div>
+                        </div>
+                        <form asp-action="Eliminar" method="post">
+                            @Html.AntiForgeryToken() <!-- Agrega el token antifalsificación -->
+                            <input type="hidden" asp-for="IdCliente" />
+                            <div class="mt-4 d-flex justify-content-between">
+                                <a asp-action="Index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-1"></i>Eliminar
+                                </button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

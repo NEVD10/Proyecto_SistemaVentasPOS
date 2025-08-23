@@ -20,54 +20,6 @@
         </div>
     </div>
 
-    <!-- Estadísticas rápidas como en Index -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Total Clientes</h6>
-                        <h4 class="mb-0">@(ViewBag.TotalClientes ?? 0)</h4>
-                    </div>
-                    <i class="bi bi-people fs-2 align-self-center"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Clientes con Ventas</h6>
-                        <h4 class="mb-0">@(ViewBag.ClientesConVentas ?? 0)</h4>
-                    </div>
-                    <i class="bi bi-person-check fs-2 align-self-center"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Clientes Sin Ventas</h6>
-                        <h4 class="mb-0">@(ViewBag.ClientesSinVentas ?? 0)</h4>
-                    </div>
-                    <i class="bi bi-person-dash fs-2 align-self-center"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Registrando</h6>
-                        <h4 class="mb-0">Nuevo</h4>
-                    </div>
-                    <i class="bi bi-file-earmark-person fs-2 align-self-center"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Card principal con formulario -->
     <div class="card shadow">
         <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary text-white">
@@ -76,7 +28,8 @@
             </h6>
         </div>
         <div class="card-body">
-            <form asp-action="Crear">
+            <form asp-action="Crear" method="post">
+                @Html.AntiForgeryToken() <!-- Agrega el token antifalsificación -->
                 <!-- Validaciones -->
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
@@ -90,7 +43,7 @@
                             <option value="">Seleccione...</option>
                             <option value="DNI">DNI</option>
                             <option value="RUC">RUC</option>
-                            <option value="Pasaporte">Pasaporte</option>
+                            <option value="Carnet de Extranjería">Carnet de Extranjería</option> <!-- Agrega esta opción -->
                         </select>
                         <span asp-validation-for="TipoDocumento" class="text-danger"></span>
                     </div>
