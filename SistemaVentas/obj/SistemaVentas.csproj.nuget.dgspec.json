@@ -54,6 +54,10 @@
               "target": "Package",
               "version": "[2.1.35, )"
             },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.12.0, )"
+            },
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[6.0.1, )"

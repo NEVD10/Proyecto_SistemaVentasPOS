@@ -16,8 +16,17 @@ builder.Services.AddDbContext<DBContexto>(options =>
 builder.Services.AddScoped<VentaRepositorio>();
 builder.Services.AddScoped<ProductoRepositorio>();
 builder.Services.AddScoped<ClienteRepositorio>();
-builder.Services.AddScoped<FacturaPdfGenerator>();
+
+builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
+builder.Services.AddScoped<IProductoRepositorio, ProductoRepositorio>();
+builder.Services.AddScoped<IServicioFacturacion, ServicioFacturacion>();
+builder.Services.AddScoped<IVentaRepositorio, VentaRepositorio>();
+builder.Services.AddScoped<IServicioCorreo, ServicioCorreo>();
+builder.Services.Configure<ConfiguracionCorreo>(builder.Configuration.GetSection("ConfiguracionCorreo"));
+
+// Registro de generadores de PDF (asegúrate de que existan)
 builder.Services.AddScoped<BoletaPdfGenerator>();
+builder.Services.AddScoped<FacturaPdfGenerator>();
 
 var app = builder.Build();
 

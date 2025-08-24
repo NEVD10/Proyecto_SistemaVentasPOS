@@ -1,10 +1,11 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using SistemaVentas.Models;
+using SistemaVentas.Services;
 
 namespace SistemaVentas.Data
 {
-    public class ProductoRepositorio
+    public class ProductoRepositorio : IProductoRepositorio
     {
         private readonly string _connectionString;
 

@@ -280,3 +280,6 @@ C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVenta
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.commons.dll
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\MailKit.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\MimeKit.dll

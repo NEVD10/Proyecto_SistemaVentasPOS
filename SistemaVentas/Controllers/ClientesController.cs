@@ -18,7 +18,11 @@ namespace SistemaVentas.Controllers
         public async Task<IActionResult> Index(int numeroPagina = 1, string cadenaBusqueda = null, string tipoDocumento = null, int tamanoPagina = 15)
         {
             var totalClientes = await _repositorio.ObtenerTotalClientes();
-            var paginador = await _repositorio.ObtenerTodos(numeroPagina, tamanoPagina, cadenaBusqueda, tipoDocumento);
+            // Combinar cadenaBusqueda y tipoDocumento en el parámetro filtro
+            string filtro = string.IsNullOrEmpty(cadenaBusqueda) && string.IsNullOrEmpty(tipoDocumento) ? null :
+                (!string.IsNullOrEmpty(cadenaBusqueda) ? cadenaBusqueda : "") +
+                (!string.IsNullOrEmpty(tipoDocumento) ? $" {tipoDocumento}" : "");
+            var paginador = await _repositorio.ObtenerTodos(numeroPagina, tamanoPagina, filtro);
             ViewData["CadenaBusquedaActual"] = cadenaBusqueda;
             ViewData["TipoDocumentoActual"] = tipoDocumento;
             ViewData["TotalClientes"] = totalClientes;
@@ -45,7 +49,7 @@ namespace SistemaVentas.Controllers
                 }
                 catch (InvalidOperationException ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message); 
+                    ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
             return View(cliente);
@@ -81,7 +85,7 @@ namespace SistemaVentas.Controllers
                 }
                 catch (InvalidOperationException ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message); 
+                    ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
             return View(cliente);

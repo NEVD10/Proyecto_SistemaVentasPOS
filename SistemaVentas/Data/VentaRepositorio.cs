@@ -1,10 +1,11 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using SistemaVentas.Models;
+using SistemaVentas.Services;
 
 namespace SistemaVentas.Data
 {
-    public class VentaRepositorio
+    public class VentaRepositorio : IVentaRepositorio
     {
         private readonly string _connectionString;
 
@@ -52,7 +53,7 @@ namespace SistemaVentas.Data
             var sql = @"
                 SELECT 
                     v.IdVenta, v.IdCliente, v.IdUsuario, v.FechaVenta, v.TipoComprobante, v.MetodoPago, v.Subtotal, v.MontoIGV, v.MontoTotal,
-                    c.IdCliente, c.Nombres, c.Apellidos, c.TipoDocumento, c.NumeroDocumento,
+                    c.IdCliente, c.Nombres, c.Apellidos, c.TipoDocumento, c.NumeroDocumento, c.Email, c.Direccion, c.Telefono, c.FechaRegistro,
                     u.IdUsuario, u.NombreUsuario,
                     dv.IdVenta, dv.IdProducto, dv.Cantidad, dv.PrecioUnitario, dv.SubtotalLinea
                 FROM Venta v
@@ -85,7 +86,7 @@ namespace SistemaVentas.Data
             return venta;
         }
 
-        public async Task<Paginador<Venta>> ObtenerTodos(int numeroPagina, int tamanoPagina, DateTime? fechaInicio = null, DateTime? fechaFin = null, int? clienteId = null)
+        public async Task<Paginador<Venta>> ObtenerTodos(int numeroPagina = 1, int tamanoPagina = 10, DateTime? fechaInicio = null, DateTime? fechaFin = null, int? clienteId = null)
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new
@@ -100,7 +101,7 @@ namespace SistemaVentas.Data
             string sql = @"
                 SELECT 
                     v.IdVenta, v.IdCliente, v.IdUsuario, v.FechaVenta, v.TipoComprobante, v.MetodoPago, v.Subtotal, v.MontoIGV, v.MontoTotal,
-                    c.IdCliente, c.Nombres, c.Apellidos, c.TipoDocumento, c.NumeroDocumento,
+                    c.IdCliente, c.Nombres, c.Apellidos, c.TipoDocumento, c.NumeroDocumento, c.Email, c.Direccion, c.Telefono, c.FechaRegistro,
                     u.IdUsuario, u.NombreUsuario
                 FROM Venta v
                 LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente
@@ -219,6 +220,23 @@ namespace SistemaVentas.Data
             }
 
             return await connection.ExecuteScalarAsync<decimal>(sumSql, parameters);
+        }
+
+        public async Task<int?> ObtenerUltimoNumeroComprobante(string tipoComprobante)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var ultimoNumero = await connection.QueryFirstOrDefaultAsync<int?>(
+                "SELECT MAX(CAST(RIGHT(NumeroComprobante, 6) AS INT)) FROM Venta WHERE TipoComprobante = @TipoComprobante",
+                new { TipoComprobante = tipoComprobante });
+            return ultimoNumero;
+        }
+
+        public async Task Actualizar(Venta venta)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            await connection.ExecuteAsync(
+                "UPDATE Venta SET NumeroComprobante = @NumeroComprobante WHERE IdVenta = @IdVenta",
+                new { venta.NumeroComprobante, venta.IdVenta });
         }
     }
 }

@@ -8,28 +8,29 @@ namespace SistemaVentas.Controllers
 {
     public class VentasController : Controller
     {
-        private readonly VentaRepositorio _ventaRepositorio;
-        private readonly ProductoRepositorio _productoRepositorio;
-        private readonly ClienteRepositorio _clienteRepositorio;
-        private readonly FacturaPdfGenerator _facturaPdfGenerator;
-        private readonly BoletaPdfGenerator _boletaPdfGenerator;
+        private readonly IClienteRepositorio _clienteRepositorio;
+        private readonly IServicioFacturacion _servicioFacturacion;
+        private readonly IVentaRepositorio _ventaRepositorio;
+        private readonly IProductoRepositorio _productoRepositorio;
         private readonly ILogger<VentasController> _logger;
+        private readonly IServicioCorreo _servicioCorreo;
 
         public VentasController(
-            VentaRepositorio ventaRepositorio,
-            ProductoRepositorio productoRepositorio,
-            ClienteRepositorio clienteRepositorio,
-            FacturaPdfGenerator facturaPdfGenerator,
-            BoletaPdfGenerator boletaPdfGenerator,
-            ILogger<VentasController> logger)
+            IClienteRepositorio clienteRepositorio,
+            IServicioFacturacion servicioFacturacion,
+            IVentaRepositorio ventaRepositorio,
+            IProductoRepositorio productoRepositorio,
+            ILogger<VentasController> logger,
+            IServicioCorreo servicioCorreo)
         {
+            _clienteRepositorio = clienteRepositorio;
+            _servicioFacturacion = servicioFacturacion;
             _ventaRepositorio = ventaRepositorio;
             _productoRepositorio = productoRepositorio;
-            _clienteRepositorio = clienteRepositorio;
-            _facturaPdfGenerator = facturaPdfGenerator;
-            _boletaPdfGenerator = boletaPdfGenerator;
             _logger = logger;
+            _servicioCorreo = servicioCorreo;
         }
+
 
         public async Task<IActionResult> Index(DateTime? fechaInicio, DateTime? fechaFin, int? clienteId, int pagina = 1, int tamanoPagina = 10)
         {
@@ -50,10 +51,10 @@ namespace SistemaVentas.Controllers
             ViewBag.ClienteId = clienteId;
             ViewBag.PaginaActual = pagina;
             ViewBag.TamanoPagina = tamanoPagina;
-            ViewBag.TotalPaginas = paginador.TotalPaginas;
+            ViewBag.TotalPaginas = (int)Math.Ceiling((double)paginador.TotalRegistros / tamanoPagina); // Calcular manualmente
             ViewBag.TotalRegistros = paginador.TotalRegistros;
-            ViewBag.TieneAnterior = paginador.TienePaginaAnterior;
-            ViewBag.TieneSiguiente = paginador.TienePaginaSiguiente;
+            ViewBag.TieneAnterior = pagina > 1;
+            ViewBag.TieneSiguiente = pagina * tamanoPagina < paginador.TotalRegistros;
             ViewBag.TotalVentasGeneral = totalVentasGeneral;
             ViewBag.MontoTotalGeneral = montoTotalGeneral;
             ViewBag.PromedioGeneral = promedioGeneral;
@@ -83,24 +84,18 @@ namespace SistemaVentas.Controllers
         public async Task<IActionResult> VerFactura(int id)
         {
             var venta = await _ventaRepositorio.ObtenerPorId(id);
-            if (venta == null)
+            if (venta == null) return NotFound();
+
+            var productos = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList(); // Ajusta a int.MaxValue para obtener todos los productos
+            try
             {
-                TempData["Error"] = "Venta no encontrada.";
+                byte[] pdfBytes = _servicioFacturacion.GenerarComprobante(venta, productos);
+                return File(pdfBytes, "application/pdf", $"{venta.TipoComprobante}_{venta.NumeroComprobante}.pdf");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Error"] = ex.Message;
                 return RedirectToAction("Index");
-            }
-
-            var productos = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
-            byte[] pdfBytes;
-
-            if (venta.TipoComprobante == "Factura")
-            {
-                pdfBytes = _facturaPdfGenerator.GeneratePdf(venta, productos);
-                return File(pdfBytes, "application/pdf", $"Factura_F001-{venta.IdVenta:D6}.pdf");
-            }
-            else
-            {
-                pdfBytes = _boletaPdfGenerator.GeneratePdf(venta, productos);
-                return File(pdfBytes, "application/pdf", $"Boleta_B001-{venta.IdVenta:D6}.pdf");
             }
         }
 
@@ -286,7 +281,6 @@ namespace SistemaVentas.Controllers
                     NumeroDocumento = nuevoClienteDNI,
                     Nombres = nuevoClienteNombre,
                     Apellidos = "",
-                    Telefono = "",
                     Email = "",
                     Direccion = "",
                     FechaRegistro = DateTime.Now
@@ -334,7 +328,7 @@ namespace SistemaVentas.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcesarVenta(string tipoComprobante, string metodoPago, int? idCliente, int idUsuario)
+        public async Task<IActionResult> ProcesarVenta(string tipoComprobante, string metodoPago, int? idCliente, int idUsuario, bool enviarCorreo = false)
         {
             var viewModel = ObtenerVentaDeTempData() ?? new Venta { DetalleVentas = new List<DetalleVenta>() };
             viewModel.TipoComprobante = tipoComprobante;
@@ -366,6 +360,34 @@ namespace SistemaVentas.Controllers
                     {
                         producto.Stock -= detalle.Cantidad;
                         await _productoRepositorio.Actualizar(producto);
+                    }
+                }
+
+                // Generar y enviar el comprobante si se solicita
+                if (enviarCorreo && idCliente.HasValue)
+                {
+                    var venta = await _ventaRepositorio.ObtenerPorId(idVenta);
+                    var productosLista = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
+                    byte[] pdfBytes = _servicioFacturacion.GenerarComprobante(venta, productosLista);
+                    var cliente = (await _clienteRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.FirstOrDefault(c => c.IdCliente == idCliente);
+                    if (cliente?.Email != null)
+                    {
+                        try
+                        {
+                            await _servicioCorreo.EnviarComprobantePorCorreo(cliente.Email, venta, pdfBytes);
+                            ViewBag.CorreoEnviado = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            ViewBag.CorreoEnviado = false;
+                            ViewBag.ErrorCorreo = $"Error al enviar el correo: {ex.Message}";
+                            _logger.LogError(ex, "Fallo al enviar correo para la venta {IdVenta}", idVenta);
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.CorreoEnviado = false;
+                        ViewBag.ErrorCorreo = "No se pudo enviar el correo: el cliente no tiene correo registrado.";
                     }
                 }
 

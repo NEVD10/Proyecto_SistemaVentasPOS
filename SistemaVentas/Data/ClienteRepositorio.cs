@@ -1,10 +1,11 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using SistemaVentas.Models;
+using SistemaVentas.Services;
 
 namespace SistemaVentas.Data
 {
-    public class ClienteRepositorio
+    public class ClienteRepositorio : IClienteRepositorio
     {
         private readonly string _connectionString;
 
@@ -13,22 +14,18 @@ namespace SistemaVentas.Data
             _connectionString = configuration.GetConnectionString("BDContexto");
         }
 
-        public async Task<Paginador<Cliente>> ObtenerTodos(int numeroPagina, int tamanoPagina, string cadenaBusqueda = null, string tipoDocumento = null)
+        public async Task<Paginador<Cliente>> ObtenerTodos(int numeroPagina = 1, int tamanoPagina = 10, string filtro = null)
         {
             using var connection = new SqlConnection(_connectionString);
-            var parameters = new { CadenaBusqueda = $"%{cadenaBusqueda}%", TipoDocumento = tipoDocumento, Desplazamiento = (numeroPagina - 1) * tamanoPagina, TamanoPagina = tamanoPagina };
+            var parameters = new { Filtro = $"%{filtro ?? ""}%", Desplazamiento = (numeroPagina - 1) * tamanoPagina, TamanoPagina = tamanoPagina };
 
             string sql = "SELECT * FROM Cliente";
             string countSql = "SELECT COUNT(*) FROM Cliente";
 
             var clausulasWhere = new List<string>();
-            if (!string.IsNullOrEmpty(cadenaBusqueda))
+            if (!string.IsNullOrEmpty(filtro))
             {
-                clausulasWhere.Add("Nombres LIKE @CadenaBusqueda OR NumeroDocumento LIKE @CadenaBusqueda");
-            }
-            if (!string.IsNullOrEmpty(tipoDocumento))
-            {
-                clausulasWhere.Add("TipoDocumento = @TipoDocumento");
+                clausulasWhere.Add("Nombres LIKE @Filtro OR NumeroDocumento LIKE @Filtro");
             }
 
             if (clausulasWhere.Any())
@@ -63,7 +60,7 @@ namespace SistemaVentas.Data
             return await connection.QuerySingleOrDefaultAsync<Cliente>("SELECT * FROM Cliente WHERE IdCliente = @Id", new { Id = id });
         }
 
-        public async Task Crear(Cliente cliente)
+        public async Task<int> Crear(Cliente cliente)
         {
             using var connection = new SqlConnection(_connectionString);
             var existe = await connection.QuerySingleOrDefaultAsync<Cliente>(
@@ -78,6 +75,7 @@ namespace SistemaVentas.Data
                   VALUES (@TipoDocumento, @NumeroDocumento, @Nombres, @Apellidos, @Telefono, @Email, @Direccion, @FechaRegistro);
                   SELECT SCOPE_IDENTITY()", cliente);
             cliente.IdCliente = id;
+            return id;
         }
 
         public async Task Actualizar(Cliente cliente)
