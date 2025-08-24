@@ -20,8 +20,8 @@ namespace SistemaVentas.Controllers
         {
             var ventas = await _servicioReporte.ObtenerVentasFiltradas(fechaInicio, fechaFin, metodoPago, tipoComprobante, idCliente);
 
-            ViewData["fechaInicio"] = fechaInicio?.ToString("yyyy-MM-dd");
-            ViewData["fechaFin"] = fechaFin?.ToString("yyyy-MM-dd");
+            ViewData["fechaInicio"] = fechaInicio?.ToString("dd-MM-yyyy");
+            ViewData["fechaFin"] = fechaFin?.ToString("dd-MM-yyyy");
             ViewData["metodoPago"] = metodoPago;
             ViewData["tipoComprobante"] = tipoComprobante;
             ViewData["idCliente"] = idCliente;
@@ -43,7 +43,7 @@ namespace SistemaVentas.Controllers
         {
             var reporte = await _servicioReporte.GenerarReporteDiario(fecha);
 
-            ViewData["fecha"] = fecha?.ToString("yyyy-MM-dd");
+            ViewData["fecha"] = fecha?.ToString("dd-MM-yyyy");
 
             return View(reporte);
         }
@@ -52,8 +52,8 @@ namespace SistemaVentas.Controllers
         {
             var reporte = await _servicioReporte.GenerarReporteMensual(fechaInicio, fechaFin);
 
-            ViewData["fechaInicio"] = fechaInicio?.ToString("yyyy-MM-dd") ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("yyyy-MM-dd");
-            ViewData["fechaFin"] = fechaFin?.ToString("yyyy-MM-dd") ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd");
+            ViewData["fechaInicio"] = fechaInicio?.ToString("dd-MM-yyyy") ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd-MM-yyyy");
+            ViewData["fechaFin"] = fechaFin?.ToString("dd-MM-yyyy") ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1).AddDays(-1).ToString("dd-MM-yyyy");
             ViewBag.VentasPorMesAnual = await _servicioReporte.ObtenerVentasPorMesAnual();
 
             return View(reporte);

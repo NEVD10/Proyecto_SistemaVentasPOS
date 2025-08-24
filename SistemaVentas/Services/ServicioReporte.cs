@@ -83,8 +83,8 @@ namespace SistemaVentas.Services
                     MontoTotal = g.Sum(d => d.PrecioUnitario * d.Cantidad),
                     Categoria = g.First().Producto != null && g.First().Producto.Categoria != null ? g.First().Producto.Categoria.Nombre : "Sin Categoría"
                 })
-                .OrderByDescending(p => p.CantidadVendida)
-                .Take(5)
+                .OrderByDescending(p => p.MontoTotal)
+                //  .Take(5)
                 .ToList();
 
             return new ReporteDiario
@@ -135,7 +135,7 @@ namespace SistemaVentas.Services
 
             // Gráfico de líneas: Tendencia de ventas por día (últimos 31 días)
             var ventasPorMes = reportes
-                .GroupBy(r => r.FechaVenta.ToString("yyyy-MM-dd"))
+                .GroupBy(r => r.FechaVenta.ToString("dd-MM-yyyy"))
                 .ToDictionary(g => g.Key, g => g.Sum(r => r.MontoTotal));
 
             // Gráfico circular: Ventas por categoría
@@ -155,7 +155,7 @@ namespace SistemaVentas.Services
                     Categoria = g.First().Producto != null && g.First().Producto.Categoria != null ? g.First().Producto.Categoria.Nombre : "Sin Categoría"
                 })
                 .OrderByDescending(p => p.MontoTotal)
-                .Take(10)
+                //.Take(10)
                 .ToList();
 
             return new ReporteMensual

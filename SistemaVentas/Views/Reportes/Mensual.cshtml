@@ -2,8 +2,8 @@
 
 @{
     ViewData["Title"] = "Reporte Mensual";
-    var fechaInicio = ViewData["fechaInicio"] as string ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("yyyy-MM-dd");
-    var fechaFin = ViewData["fechaFin"] as string ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd");
+    var fechaInicio = ViewData["fechaInicio"] as string ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd-MM-yyyy");
+    var fechaFin = ViewData["fechaFin"] as string ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1).AddDays(-1).ToString("dd-MM-yyyy");
 }
 
 <!DOCTYPE html>
