@@ -1,4 +1,6 @@
 ﻿using SistemaVentas.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace SistemaVentas.Services
 {

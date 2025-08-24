@@ -41,7 +41,7 @@ namespace SistemaVentas.Controllers
 
             var paginador = await _ventaRepositorio.ObtenerTodos(pagina, tamanoPagina, fechaInicio, fechaFin, clienteId);
             var ventas = paginador.Elementos.ToList();
-
+            //var num_ventasTotales = await _ventaRepositorio.ObtenerTotalVentas();
             var totalVentasGeneral = await _ventaRepositorio.ContarTotal(fechaInicio, fechaFin, clienteId);
             var montoTotalGeneral = await _ventaRepositorio.SumarMontoTotal(fechaInicio, fechaFin, clienteId);
             var promedioGeneral = totalVentasGeneral > 0 ? montoTotalGeneral / totalVentasGeneral : 0;
@@ -62,6 +62,7 @@ namespace SistemaVentas.Controllers
             ViewBag.Clientes = (await _clienteRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
             ViewBag.ProductosBusqueda = new List<Producto>();
             ViewBag.ClientesBusqueda = new List<Cliente>();
+            //ViewBag["VentasTotales"] = num_ventasTotales;
 
             return View(paginador);
         }

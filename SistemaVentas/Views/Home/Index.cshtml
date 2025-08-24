@@ -1,8 +1,133 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<SistemaVentas.Models.VentaReporte>
+
+@{
+    ViewData["Title"] = "Reportes de Ventas";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2>Reportes de Ventas</h2>
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <label>Fecha Inicio:</label>
+        <input type="date" name="fechaInicio" class="form-control" value="@ViewData["fechaInicio"]" />
+    </div>
+    <div class="form-group">
+        <label>Fecha Fin:</label>
+        <input type="date" name="fechaFin" class="form-control" value="@ViewData["fechaFin"]" />
+    </div>
+    <div class="form-group">
+        <label>Método de Pago:</label>
+        <input type="text" name="metodoPago" class="form-control" value="@ViewData["metodoPago"]" />
+    </div>
+    <div class="form-group">
+        <label>Tipo Comprobante:</label>
+        <input type="text" name="tipoComprobante" class="form-control" value="@ViewData["tipoComprobante"]" />
+    </div>
+    <div class="form-group">
+        <label>ID Cliente:</label>
+        <input type="number" name="idCliente" class="form-control" value="@ViewData["idCliente"]" />
+    </div>
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Venta</th>
+                <th>Fecha</th>
+                <th>Tipo Comprobante</th>
+                <th>Método Pago</th>
+                <th>Cliente</th>
+                <th>Monto Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IdVenta</td>
+                    <td>@item.FechaVenta.ToString("dd/MM/yyyy")</td>
+                    <td>@item.TipoComprobante</td>
+                    <td>@item.MetodoPago</td>
+                    <td>@item.ClienteNombre</td>
+                    <td>@item.MontoTotal.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <h3>Gráfico de Barras (Ventas por Día)</h3>
+        <canvas id="barrasChart" width="400" height="200"></canvas>
+    </div>
+
+    <div>
+        <h3>Gráfico de Líneas (Ventas por Mes)</h3>
+        <canvas id="lineasChart" width="400" height="200"></canvas>
+    </div>
+}
+else
+{
+    <p>No hay datos para mostrar.</p>
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Gráfico de Barras
+    var ctxBarras = document.getElementById('barrasChart').getContext('2d');
+    var datosBarras = @Html.Raw(Json.Serialize(ViewBag.DatosBarras ?? new Dictionary<string, decimal>()));
+    if (Object.keys(datosBarras).length > 0) {
+        new Chart(ctxBarras, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(datosBarras),
+                datasets: [{
+                    label: 'Ventas por Día',
+                    data: Object.values(datosBarras),
+                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF']
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    } else {
+        document.getElementById('barrasChart').style.display = 'none';
+        document.querySelector('#barrasChart').parentElement.innerHTML = '<p>No hay datos para mostrar en el gráfico de barras.</p>';
+    }
+
+    // Gráfico de Líneas
+    var ctxLineas = document.getElementById('lineasChart').getContext('2d');
+    var datosLineas = @Html.Raw(Json.Serialize(ViewBag.DatosLineas ?? new Dictionary<string, decimal>()));
+    if (Object.keys(datosLineas).length > 0) {
+        new Chart(ctxLineas, {
+            type: 'line',
+            data: {
+                labels: Object.keys(datosLineas),
+                datasets: [{
+                    label: 'Ventas por Mes',
+                    data: Object.values(datosLineas),
+                    borderColor: '#FF6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    } else {
+        document.getElementById('lineasChart').style.display = 'none';
+        document.querySelector('#lineasChart').parentElement.innerHTML = '<p>No hay datos para mostrar en el gráfico de líneas.</p>';
+    }
+</script>

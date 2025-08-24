@@ -9,12 +9,12 @@ namespace SistemaVentas.Controllers
     public class ProductosController : Controller
     {
         private readonly ProductoRepositorio _productoRepositorio;
-        private readonly ILogger<ProductosController> _logger; // Para depuración
+        private readonly ILogger<ProductosController> _logger; // Para depuracion
 
         public ProductosController(ProductoRepositorio productoRepositorio, ILogger<ProductosController> logger)
         {
             _productoRepositorio = productoRepositorio;
-            _logger = logger; // Inyectar ILogger para depuración
+            _logger = logger; // Inyectar ILogger para depuracion
         }
 
         public async Task<IActionResult> Index(int numeroPagina = 1, int tamanoPagina = 10, string cadenaBusqueda = null, bool? estado = null)
@@ -92,7 +92,7 @@ namespace SistemaVentas.Controllers
             {
                 Value = c.IdCategoria.ToString(),
                 Text = c.Nombre,
-                Selected = c.IdCategoria == producto.IdCategoria // Selecciona la categoría actual
+                Selected = c.IdCategoria == producto.IdCategoria // Selecciona la categoria actual
             }));
             ViewBag.Categorias = categoriasList;
             return View(producto);

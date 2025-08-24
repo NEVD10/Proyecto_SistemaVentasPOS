@@ -30,7 +30,5 @@ namespace SistemaVentas.Data
             var sql = "SELECT * FROM DetalleVenta WHERE IdVenta = @IdVenta";
             return await connection.QueryAsync<DetalleVenta>(sql, new { IdVenta = idVenta });
         }
-
-        // Otros métodos como Actualizar, Eliminar pueden agregarse según necesidad
     }
 }

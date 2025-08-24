@@ -1,5 +1,232 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model SistemaVentas.Models.ReporteDiario
+
 @{
+    ViewData["Title"] = "Reporte Diario";
+    var fechaFormateada = ViewData["fecha"] as string ?? DateTime.Today.ToString("dd/MM/yyyy");
 }
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - @fechaFormateada</title>
+    <link rel="stylesheet" href="~/css/reporte.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Reporte Diario de Ventas</h1>
+            <p>Resumen completo del día @fechaFormateada</p>
+        </div>
+
+        <form asp-action="Diario" method="get">
+            <div class="form-group">
+                <label>Fecha:</label>
+                <input type="date" name="fecha" class="form-control" value="@ViewData["fecha"]" />
+            </div>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-message">@ViewBag.Error</div>
+        }
+
+        <div class="kpi-section">
+            <div class="kpi-card monto-total">
+                <div class="kpi-title">Monto Total del Día</div>
+                <div class="kpi-value">S/ @Model.MontoTotalDia.ToString("N2")</div>
+            </div>
+            <div class="kpi-card transacciones">
+                <div class="kpi-title">Número de Transacciones</div>
+                <div class="kpi-value">@Model.NumeroTransacciones</div>
+            </div>
+            <div class="kpi-card ticket-promedio">
+                <div class="kpi-title">Ticket Promedio</div>
+                <div class="kpi-value">S/ @Model.TicketPromedio.ToString("N2")</div>
+            </div>
+            <div class="kpi-card ganancias">
+                <div class="kpi-title">Ganancias del Día</div>
+                <div class="kpi-value">S/ @Model.GananciasDia.ToString("N2")</div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-card">
+                <div class="chart-title">Tendencia de Ventas por Hora - @fechaFormateada</div>
+                <div class="chart-container">
+                    <canvas id="ventasPorHoraChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Ventas por Categoría</div>
+                <div class="chart-container doughnut">
+                    <canvas id="ventasPorCategoriaChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+         <div class="table-section">
+            <div class="row">
+                <div class="col-md-6 mb-4"> 
+                    <div class="table-title">Productos Vendidos</div>
+                    @if (Model.TopProductos?.Any() == true)
+                    {
+                        <table class="products-table table table-striped"> 
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="rank">#</th>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th class="cantidad">Cantidad Vendida</th>
+                                    <th class="monto">Monto Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.TopProductos.Count; i++)
+                                {
+                                    var producto = Model.TopProductos[i];
+                                    <tr>
+                                        <td class="rank">@(i + 1)</td>
+                                        <td>@producto.NombreProducto</td>
+                                        <td>@producto.Categoria</td>
+                                        <td class="cantidad">@producto.CantidadVendida</td>
+                                        <td class="monto">S/ @producto.MontoTotal.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="no-data alert alert-info">No hay datos de productos vendidos para mostrar.</div>
+                    }
+                </div>
+
+                <!-- Segunda tabla - Columna derecha -->
+                <div class="col-md-6 mb-4">
+                    <div class="table-title">Top 5 - Productos Más Vendidos</div>
+                    @if (Model.TopProductos?.Any() == true)
+                    {
+                        <table class="products-table table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="rank">#</th>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th class="cantidad">Cantidad Vendida</th>
+                                    <th class="monto">Monto Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Math.Min(Model.TopProductos.Count, 3); i++) //SOLO MUSTRA EL TOP 5
+                                {
+                                    var producto = Model.TopProductos[i];
+                                    <tr>
+                                        <td class="rank">@(i + 1)</td>
+                                        <td>@producto.NombreProducto</td>
+                                        <td>@producto.Categoria</td>
+                                        <td class="cantidad">@producto.CantidadVendida</td>
+                                        <td class="monto">S/ @producto.MontoTotal.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="no-data alert alert-info">No hay datos de productos vendidos para mostrar.</div>
+                    }
+                </div>
+        
+            </div> 
+        </div>
+    </div>
+
+    <script>
+        const datosVentasPorHora = @Html.Raw(Json.Serialize(Model.VentasPorHora ?? new Dictionary<string, decimal>()));
+        const datosVentasPorCategoria = @Html.Raw(Json.Serialize(Model.VentasPorCategoria ?? new Dictionary<string, decimal>()));
+
+        const ctxHora = document.getElementById('ventasPorHoraChart').getContext('2d');
+        const ventasPorHoraChart = new Chart(ctxHora, {
+            type: 'line',
+            data: {
+                labels: Object.keys(datosVentasPorHora),
+                datasets: [{
+                    label: 'Ventas (S/)',
+                    data: Object.values(datosVentasPorHora),
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#007bff',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#6c757d' } },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f3f4' },
+                        ticks: { color: '#6c757d', callback: function(value) { return 'S/ ' + value.toLocaleString(); } }
+                    }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+
+        const ctxCategoria = document.getElementById('ventasPorCategoriaChart').getContext('2d');
+        const coloresCategoria = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1', '#fd7e14', '#20c997', '#6c757d', '#e83e8c'];
+        const ventasPorCategoriaChart = new Chart(ctxCategoria, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(datosVentasPorCategoria),
+                datasets: [{
+                    data: Object.values(datosVentasPorCategoria),
+                    backgroundColor: coloresCategoria.slice(0, Object.keys(datosVentasPorCategoria).length),
+                    borderWidth: 0,
+                    cutout: '60%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true, font: { size: 12 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: S/ ${value.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (Object.keys(datosVentasPorHora).length === 0) {
+            document.getElementById('ventasPorHoraChart').style.display = 'none';
+            document.querySelector('#ventasPorHoraChart').parentElement.innerHTML = '<div class="no-data">No hay datos de ventas por hora para mostrar.</div>';
+        }
+
+        if (Object.keys(datosVentasPorCategoria).length === 0) {
+            document.getElementById('ventasPorCategoriaChart').style.display = 'none';
+            document.querySelector('#ventasPorCategoriaChart').parentElement.innerHTML = '<div class="no-data">No hay datos de ventas por categoría para mostrar.</div>';
+        }
+    </script>
+</body>
+</html>

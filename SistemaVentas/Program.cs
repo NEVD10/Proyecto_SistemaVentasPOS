@@ -22,6 +22,7 @@ builder.Services.AddScoped<IProductoRepositorio, ProductoRepositorio>();
 builder.Services.AddScoped<IServicioFacturacion, ServicioFacturacion>();
 builder.Services.AddScoped<IVentaRepositorio, VentaRepositorio>();
 builder.Services.AddScoped<IServicioCorreo, ServicioCorreo>();
+builder.Services.AddScoped<IServicioReporte, ServicioReporte>();
 builder.Services.Configure<ConfiguracionCorreo>(builder.Configuration.GetSection("ConfiguracionCorreo"));
 
 // Registro de generadores de PDF (asegúrate de que existan)

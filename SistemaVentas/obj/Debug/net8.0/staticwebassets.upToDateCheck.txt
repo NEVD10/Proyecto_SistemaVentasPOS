@@ -1,4 +1,5 @@
 wwwroot\css\estilos.css
+wwwroot\css\reporte.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\js\site.js

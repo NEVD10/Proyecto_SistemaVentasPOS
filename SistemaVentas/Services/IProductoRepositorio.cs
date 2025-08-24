@@ -8,6 +8,5 @@ namespace SistemaVentas.Services
         Task<Producto> ObtenerPorId(int id);
         Task<Producto> ObtenerPorCodigoBarras(string codigoBarras);
         Task Actualizar(Producto producto);
-        // Otros métodos según necesites
     }
 }

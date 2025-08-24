@@ -41,10 +41,10 @@ namespace SistemaVentas.Models
 
         [Required(ErrorMessage = "La categoría es obligatoria")]
         [Display(Name = "Categoría del producto:")]
-        public int IdCategoria { get; set; } // Cambiado a int no nullable
+        public int IdCategoria { get; set; } 
 
         [ForeignKey("IdCategoria")]
-        public Categoria Categoria { get; set; } // Relación de navegación
+        public Categoria Categoria { get; set; } 
 
         [Display(Name = "Estado del producto:")]
         public bool Estado { get; set; } = true;

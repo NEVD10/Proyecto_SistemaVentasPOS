@@ -2,6 +2,10 @@
 using Microsoft.Data.SqlClient;
 using SistemaVentas.Models;
 using SistemaVentas.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SistemaVentas.Data
 {
@@ -55,17 +59,21 @@ namespace SistemaVentas.Data
                     v.IdVenta, v.IdCliente, v.IdUsuario, v.FechaVenta, v.TipoComprobante, v.MetodoPago, v.Subtotal, v.MontoIGV, v.MontoTotal,
                     c.IdCliente, c.Nombres, c.Apellidos, c.TipoDocumento, c.NumeroDocumento, c.Email, c.Direccion, c.Telefono, c.FechaRegistro,
                     u.IdUsuario, u.NombreUsuario,
-                    dv.IdVenta, dv.IdProducto, dv.Cantidad, dv.PrecioUnitario, dv.SubtotalLinea
+                    dv.IdVenta, dv.IdProducto, dv.Cantidad, dv.PrecioUnitario, dv.SubtotalLinea,
+                    p.IdProducto, p.Nombre, p.CodigoBarras, p.PrecioCosto, p.PrecioVenta, p.Stock, p.Marca, p.IdCategoria, p.Estado,
+                    cat.IdCategoria, cat.Nombre
                 FROM Venta v
                 LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente
                 LEFT JOIN Usuario u ON v.IdUsuario = u.IdUsuario
                 LEFT JOIN DetalleVenta dv ON v.IdVenta = dv.IdVenta
+                LEFT JOIN Producto p ON dv.IdProducto = p.IdProducto
+                LEFT JOIN Categoria cat ON p.IdCategoria = cat.IdCategoria
                 WHERE v.IdVenta = @Id";
 
             Venta venta = null;
-            await connection.QueryAsync<Venta, Cliente, Usuario, DetalleVenta, Venta>(
+            await connection.QueryAsync<Venta, Cliente, Usuario, DetalleVenta, Producto, Categoria, Venta>(
                 sql,
-                (v, c, u, dv) =>
+                (v, c, u, dv, p, cat) =>
                 {
                     if (venta == null)
                     {
@@ -76,12 +84,18 @@ namespace SistemaVentas.Data
                     }
                     if (dv != null && dv.IdVenta != 0)
                     {
-                        venta.DetalleVentas.Add(dv);
+                        var detalleExistente = venta.DetalleVentas.FirstOrDefault(d => d.IdDetalleVenta == dv.IdDetalleVenta);
+                        if (detalleExistente == null)
+                        {
+                            dv.Producto = p;
+                            if (p != null) p.Categoria = cat;
+                            venta.DetalleVentas.Add(dv);
+                        }
                     }
                     return venta;
                 },
                 new { Id = id },
-                splitOn: "IdCliente,IdUsuario,IdVenta");
+                splitOn: "IdCliente,IdUsuario,IdVenta,IdProducto,IdCategoria");
 
             return venta;
         }
@@ -102,12 +116,18 @@ namespace SistemaVentas.Data
                 SELECT 
                     v.IdVenta, v.IdCliente, v.IdUsuario, v.FechaVenta, v.TipoComprobante, v.MetodoPago, v.Subtotal, v.MontoIGV, v.MontoTotal,
                     c.IdCliente, c.Nombres, c.Apellidos, c.TipoDocumento, c.NumeroDocumento, c.Email, c.Direccion, c.Telefono, c.FechaRegistro,
-                    u.IdUsuario, u.NombreUsuario
+                    u.IdUsuario, u.NombreUsuario,
+                    dv.IdVenta, dv.IdProducto, dv.Cantidad, dv.PrecioUnitario, dv.SubtotalLinea,
+                    p.IdProducto, p.Nombre, p.CodigoBarras, p.PrecioCosto, p.PrecioVenta, p.Stock, p.Marca, p.IdCategoria, p.Estado,
+                    cat.IdCategoria, cat.Nombre
                 FROM Venta v
                 LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente
-                LEFT JOIN Usuario u ON v.IdUsuario = u.IdUsuario";
+                LEFT JOIN Usuario u ON v.IdUsuario = u.IdUsuario
+                LEFT JOIN DetalleVenta dv ON v.IdVenta = dv.IdVenta
+                LEFT JOIN Producto p ON dv.IdProducto = p.IdProducto
+                LEFT JOIN Categoria cat ON p.IdCategoria = cat.IdCategoria";
 
-            string countSql = "SELECT COUNT(*) FROM Venta v";
+            string countSql = "SELECT COUNT(DISTINCT v.IdVenta) FROM Venta v";
 
             var whereClauses = new List<string>();
             if (fechaInicio.HasValue)
@@ -132,22 +152,39 @@ namespace SistemaVentas.Data
 
             sql += " ORDER BY v.FechaVenta DESC OFFSET @Desplazamiento ROWS FETCH NEXT @TamanoPagina ROWS ONLY";
 
-            var ventas = (await connection.QueryAsync<Venta, Cliente, Usuario, Venta>(
+            var ventasDict = new Dictionary<int, Venta>();
+            await connection.QueryAsync<Venta, Cliente, Usuario, DetalleVenta, Producto, Categoria, Venta>(
                 sql,
-                (venta, cliente, usuario) =>
+                (v, c, u, dv, p, cat) =>
                 {
-                    venta.Cliente = cliente;
-                    venta.Usuario = usuario;
+                    if (!ventasDict.TryGetValue(v.IdVenta, out var venta))
+                    {
+                        venta = v;
+                        venta.Cliente = c;
+                        venta.Usuario = u;
+                        venta.DetalleVentas = new List<DetalleVenta>();
+                        ventasDict.Add(v.IdVenta, venta);
+                    }
+                    if (dv != null && dv.IdVenta != 0)
+                    {
+                        var detalleExistente = venta.DetalleVentas.FirstOrDefault(d => d.IdDetalleVenta == dv.IdDetalleVenta);
+                        if (detalleExistente == null)
+                        {
+                            dv.Producto = p;
+                            if (p != null) p.Categoria = cat;
+                            venta.DetalleVentas.Add(dv);
+                        }
+                    }
                     return venta;
                 },
                 parameters,
-                splitOn: "IdCliente,IdUsuario")).AsList();
+                splitOn: "IdCliente,IdUsuario,IdVenta,IdProducto,IdCategoria");
 
             var totalRegistros = await connection.ExecuteScalarAsync<int>(countSql, parameters);
 
             return new Paginador<Venta>
             {
-                Elementos = ventas,
+                Elementos = ventasDict.Values.ToList(),
                 TotalRegistros = totalRegistros,
                 NumeroPagina = numeroPagina,
                 TamanoPagina = tamanoPagina
