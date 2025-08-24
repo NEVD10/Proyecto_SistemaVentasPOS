@@ -15,6 +15,17 @@ namespace SistemaVentas.Models
         public List<ProductoVendido> TopProductos { get; set; }
     }
 
+    public class ReporteMensual
+    {
+        public decimal MontoTotalMes { get; set; }
+        public int NumeroTransacciones { get; set; }
+        public decimal GananciasMes { get; set; }
+        public Dictionary<string, decimal> VentasPorMes { get; set; } // Para gráfico de líneas
+        public Dictionary<string, decimal> ComparacionMeses { get; set; } // Mes actual vs anterior/año anterior
+        public Dictionary<string, decimal> VentasPorCategoria { get; set; } // Para gráfico circular
+        public List<ProductoVendido> TopProductos { get; set; } // Top 10 productos
+    }
+
     public class VentaReporte
     {
         public int IdVenta { get; set; }
@@ -35,6 +46,4 @@ namespace SistemaVentas.Models
         public string Categoria { get; set; }
     }
 
-
-    // Nota: No redefiniré DetalleVenta aquí, ya que existe en tu proyecto.
 }

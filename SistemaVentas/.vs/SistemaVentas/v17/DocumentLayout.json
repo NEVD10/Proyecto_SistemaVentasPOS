@@ -3,8 +3,84 @@
   "WorkspaceRootPath": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\services\\iventarepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:services\\iventarepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\services\\servicioreporte.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:services\\servicioreporte.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\services\\serviciocorreo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:services\\serviciocorreo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\controllers\\reportescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:controllers\\reportescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\services\\iservicioreporte.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:services\\iservicioreporte.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\views\\reportes\\mensual.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:views\\reportes\\mensual.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\controllers\\ventascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:controllers\\ventascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\services\\serviciofacturacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:services\\serviciofacturacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\data\\ventarepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:data\\ventarepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\data\\usuariorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:data\\usuariorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\data\\productorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:data\\productorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\controllers\\clientescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:controllers\\clientescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\models\\models.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:models\\models.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\views\\clientes\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:views\\clientes\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\wwwroot\\css\\estilos.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:wwwroot\\css\\estilos.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\wwwroot\\css\\reporte.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:wwwroot\\css\\reporte.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|c:\\users\\valdivia\\desktop\\nueva carpeta\\sistemaventas\\sistemaventas\\sistemaventas\\views\\ventas\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{897B285F-9483-4F21-AF4F-6EC8F675E332}|SistemaVentas.csproj|solutionrelative:views\\ventas\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,21 +90,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 1055,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "VentaRepositorio.cs",
-              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Data\\VentaRepositorio.cs",
-              "RelativeDocumentMoniker": "Data\\VentaRepositorio.cs",
-              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Data\\VentaRepositorio.cs",
-              "RelativeToolTip": "Data\\VentaRepositorio.cs",
-              "ViewState": "AgIAAHQAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-24T15:59:37.113Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
@@ -40,6 +103,266 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-24T20:05:54.015Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ReportesController.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Controllers\\ReportesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ReportesController.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Controllers\\ReportesController.cs",
+              "RelativeToolTip": "Controllers\\ReportesController.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAA5wD0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T16:35:56.574Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ServicioReporte.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\ServicioReporte.cs",
+              "RelativeDocumentMoniker": "Services\\ServicioReporte.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\ServicioReporte.cs",
+              "RelativeToolTip": "Services\\ServicioReporte.cs",
+              "ViewState": "AgIAAMoAAAAAAAAAAAAuwNkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T16:34:45.32Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "VentasController.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Controllers\\VentasController.cs",
+              "RelativeDocumentMoniker": "Controllers\\VentasController.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Controllers\\VentasController.cs",
+              "RelativeToolTip": "Controllers\\VentasController.cs",
+              "ViewState": "AgIAALYBAAAAAAAAAAAUwCQAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T16:35:55.221Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IServicioReporte.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\IServicioReporte.cs",
+              "RelativeDocumentMoniker": "Services\\IServicioReporte.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\IServicioReporte.cs",
+              "RelativeToolTip": "Services\\IServicioReporte.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T16:22:17.108Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ServicioCorreo.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\ServicioCorreo.cs",
+              "RelativeDocumentMoniker": "Services\\ServicioCorreo.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\ServicioCorreo.cs",
+              "RelativeToolTip": "Services\\ServicioCorreo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADsAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T16:41:00.508Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IVentaRepositorio.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\IVentaRepositorio.cs",
+              "RelativeDocumentMoniker": "Services\\IVentaRepositorio.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\IVentaRepositorio.cs",
+              "RelativeToolTip": "Services\\IVentaRepositorio.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T19:57:23.328Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Views\\Clientes\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Clientes\\Index.cshtml",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Views\\Clientes\\Index.cshtml",
+              "RelativeToolTip": "Views\\Clientes\\Index.cshtml",
+              "ViewState": "AgIAANIAAAAAAAAAAAAAANsAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-24T17:15:37.846Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "reporte.css",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\wwwroot\\css\\reporte.css",
+              "RelativeDocumentMoniker": "wwwroot\\css\\reporte.css",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\wwwroot\\css\\reporte.css",
+              "RelativeToolTip": "wwwroot\\css\\reporte.css",
+              "ViewState": "AgIAANYAAAAAAAAAAAAqwN0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-08-24T17:19:23.54Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "estilos.css",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\wwwroot\\css\\estilos.css",
+              "RelativeDocumentMoniker": "wwwroot\\css\\estilos.css",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\wwwroot\\css\\estilos.css",
+              "RelativeToolTip": "wwwroot\\css\\estilos.css",
+              "ViewState": "AgIAAHkAAAAAAAAAAAAqwI4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-08-24T17:19:51.412Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Mensual.cshtml",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Views\\Reportes\\Mensual.cshtml",
+              "RelativeDocumentMoniker": "Views\\Reportes\\Mensual.cshtml",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Views\\Reportes\\Mensual.cshtml",
+              "RelativeToolTip": "Views\\Reportes\\Mensual.cshtml",
+              "ViewState": "AgIAAOQAAAAAAAAAAAAuwNgAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-24T16:39:26.541Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ClientesController.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Controllers\\ClientesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ClientesController.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Controllers\\ClientesController.cs",
+              "RelativeToolTip": "Controllers\\ClientesController.cs",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAmwAsAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T19:00:20.698Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "UsuarioRepositorio.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Data\\UsuarioRepositorio.cs",
+              "RelativeDocumentMoniker": "Data\\UsuarioRepositorio.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Data\\UsuarioRepositorio.cs",
+              "RelativeToolTip": "Data\\UsuarioRepositorio.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T19:37:46.4Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ProductoRepositorio.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Data\\ProductoRepositorio.cs",
+              "RelativeDocumentMoniker": "Data\\ProductoRepositorio.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Data\\ProductoRepositorio.cs",
+              "RelativeToolTip": "Data\\ProductoRepositorio.cs",
+              "ViewState": "AgIAAMMAAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T19:37:48.849Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "site.css",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\wwwroot\\css\\site.css",
+              "RelativeDocumentMoniker": "wwwroot\\css\\site.css",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\wwwroot\\css\\site.css",
+              "RelativeToolTip": "wwwroot\\css\\site.css",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAwAoAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-08-24T17:20:05.436Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Cliente.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Models\\Cliente.cs",
+              "RelativeDocumentMoniker": "Models\\Cliente.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Models\\Cliente.cs",
+              "RelativeToolTip": "Models\\Cliente.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T19:36:21.967Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Views\\Ventas\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Ventas\\Index.cshtml",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Views\\Ventas\\Index.cshtml",
+              "RelativeToolTip": "Views\\Ventas\\Index.cshtml",
+              "ViewState": "AgIAAFkAAAAAAAAAAAAjwGQAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-24T16:47:16.681Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ServicioFacturacion.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\ServicioFacturacion.cs",
+              "RelativeDocumentMoniker": "Services\\ServicioFacturacion.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Services\\ServicioFacturacion.cs",
+              "RelativeToolTip": "Services\\ServicioFacturacion.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T16:40:54.999Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Models.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Models\\Models.cs",
+              "RelativeDocumentMoniker": "Models\\Models.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Models\\Models.cs",
+              "RelativeToolTip": "Models\\Models.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAtwBQAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T16:23:07.19Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "VentaRepositorio.cs",
+              "DocumentMoniker": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Data\\VentaRepositorio.cs",
+              "RelativeDocumentMoniker": "Data\\VentaRepositorio.cs",
+              "ToolTip": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\Data\\VentaRepositorio.cs",
+              "RelativeToolTip": "Data\\VentaRepositorio.cs",
+              "ViewState": "AgIAABYBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T15:59:37.113Z",
+              "EditorCaption": ""
             }
           ]
         }

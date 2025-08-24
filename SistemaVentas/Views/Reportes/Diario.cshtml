@@ -22,11 +22,18 @@
         </div>
 
         <form asp-action="Diario" method="get">
-            <div class="form-group">
-                <label>Fecha:</label>
-                <input type="date" name="fecha" class="form-control" value="@ViewData["fecha"]" />
+            <div class="row align-items-end justify-content-end mb-4 mt-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Fecha:</label>
+                    <input type="date" name="fecha" class="form-control" value="@ViewData["fecha"]" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel me-1"></i>Filtrar
+                    </button>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+            
         </form>
 
         @if (ViewBag.Error != null)
@@ -42,10 +49,6 @@
             <div class="kpi-card transacciones">
                 <div class="kpi-title">Número de Transacciones</div>
                 <div class="kpi-value">@Model.NumeroTransacciones</div>
-            </div>
-            <div class="kpi-card ticket-promedio">
-                <div class="kpi-title">Ticket Promedio</div>
-                <div class="kpi-value">S/ @Model.TicketPromedio.ToString("N2")</div>
             </div>
             <div class="kpi-card ganancias">
                 <div class="kpi-title">Ganancias del Día</div>
@@ -107,7 +110,7 @@
 
                 <!-- Segunda tabla - Columna derecha -->
                 <div class="col-md-6 mb-4">
-                    <div class="table-title">Top 5 - Productos Más Vendidos</div>
+                    <div class="table-title">Top 3 - Productos Más Vendidos</div>
                     @if (Model.TopProductos?.Any() == true)
                     {
                         <table class="products-table table table-striped">

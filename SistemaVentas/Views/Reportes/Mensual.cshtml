@@ -1,5 +1,283 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model SistemaVentas.Models.ReporteMensual
+
 @{
+    ViewData["Title"] = "Reporte Mensual";
+    var fechaInicio = ViewData["fechaInicio"] as string ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("yyyy-MM-dd");
+    var fechaFin = ViewData["fechaFin"] as string ?? new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd");
 }
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - @fechaInicio al @fechaFin</title>
+    <link rel="stylesheet" href="~/css/reporte.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Reporte Mensual de Ventas</h1>
+            <p>Resumen del período @fechaInicio al @fechaFin</p>
+        </div>
+
+        <form asp-action="Mensual" method="get">
+            <div class="row align-items-end justify-content-end g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Fecha Inicio:</label>
+                    <input type="date" name="fechaInicio" class="form-control" value="@ViewData["fechaInicio"]" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Fecha Fin:</label>
+                    <input type="date" name="fechaFin" class="form-control" value="@ViewData["fechaFin"]" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel me-1"></i>Filtrar
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-message">@ViewBag.Error</div>
+        }
+
+        <div class="kpi-section">
+            <div class="kpi-card monto-total">
+                <div class="kpi-title">Monto Total del Mes</div>
+                <div class="kpi-value">S/ @Model.MontoTotalMes.ToString("N2")</div>
+            </div>
+            <div class="kpi-card transacciones">
+                <div class="kpi-title">Número de Transacciones</div>
+                <div class="kpi-value">@Model.NumeroTransacciones</div>
+            </div>
+            <div class="kpi-card ganancias">
+                <div class="kpi-title">Ganancias del Mes</div>
+                <div class="kpi-value">S/ @Model.GananciasMes.ToString("N2")</div>
+            </div>
+        </div>
+
+        <!-- Primera fila: Dos gráficos de tendencia -->
+        <div class="row mb-4">
+            <!-- Gráfico 1: Tendencia Mensual -->
+            <div class="col-md-6 mb-3">
+                <div class="chart-card h-100">
+                    <div class="chart-title">Tendencia de Ventas Mensual (Últimos 31 días)</div>
+                    <div class="chart-container">
+                        <canvas id="ventasPorMesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico 2: Tendencia Anual -->
+            <div class="col-md-6 mb-3">
+                <div class="chart-card h-100">
+                    <div class="chart-title">Tendencia de Ventas Anual (Últimos 24 meses)</div>
+                    <div class="chart-container">
+                        <canvas id="ventasPorMesAnualChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segunda fila: Gráfico circular y tabla -->
+        <div class="row">
+            <!-- Gráfico 3: Ventas por Categoría -->
+            <div class="col-md-4 mb-4">
+                <div class="chart-card h-100">
+                    <div class="chart-title">Ventas por Categoría</div>
+                    <div class="chart-container doughnut">
+                        <canvas id="ventasPorCategoriaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla: Top 10 Productos -->
+            <div class="col-md-8 mb-4">
+                <div class="table-section h-100">
+                    <div class="table-title">Top 5 Productos Más Vendidos</div>
+                    @if (Model.TopProductos?.Any() == true)
+                    {
+                        <table class="products-table">
+                            <thead>
+                                <tr>
+                                    <th class="rank">#</th>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th class="cantidad">Cantidad Vendida</th>
+                                    <th class="monto">Monto Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Math.Min(Model.TopProductos.Count, 5); i++)
+                                {
+                                    var producto = Model.TopProductos[i];
+                                    <tr>
+                                        <td class="rank">@(i + 1)</td>
+                                        <td>@producto.NombreProducto</td>
+                                        <td>@producto.Categoria</td>
+                                        <td class="cantidad">@producto.CantidadVendida</td>
+                                        <td class="monto">S/ @producto.MontoTotal.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="no-data">No hay datos de productos vendidos para mostrar. Verifica la carga de DetalleVentas y Producto en el repositorio.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gráfico de líneas: Tendencia de ventas mensual (Últimos 31 días)
+        const datosVentasPorMes = @Html.Raw(Json.Serialize(Model.VentasPorMes ?? new Dictionary<string, decimal>()));
+        const ctxMes = document.getElementById('ventasPorMesChart').getContext('2d');
+        const ventasPorMesChart = new Chart(ctxMes, {
+            type: 'line',
+            data: {
+                labels: Object.keys(datosVentasPorMes).sort(), // Ordenar fechas
+                datasets: [{
+                    label: 'Ventas (S/)',
+                    data: Object.values(datosVentasPorMes),
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#007bff',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#6c757d' } },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f3f4' },
+                        ticks: { color: '#6c757d', callback: function(value) { return 'S/ ' + value.toLocaleString(); } }
+                    }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+
+        // Gráfico de líneas: Tendencia de ventas anual (Últimos 24 meses)
+        const datosVentasPorMesAnual = @Html.Raw(Json.Serialize(ViewBag.VentasPorMesAnual ?? new Dictionary<string, decimal>()));
+        const ctxMesAnual = document.getElementById('ventasPorMesAnualChart').getContext('2d');
+        const ventasPorMesAnualChart = new Chart(ctxMesAnual, {
+            type: 'line',
+            data: {
+                labels: Object.keys(datosVentasPorMesAnual).map(key => {
+                    const [month, year] = key.split('/');
+                    const date = new Date(year, month - 1, 1);
+                    return date.toLocaleString('es-ES', { month: 'long' }) + ' ' + year;
+                }).slice(-24),
+                datasets: [{
+                    label: 'Ventas (S/)',
+                    data: Object.values(datosVentasPorMesAnual).slice(-24),
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#28a745',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#6c757d' } },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f3f4' },
+                        ticks: { color: '#6c757d', callback: function(value) { return 'S/ ' + value.toLocaleString(); } }
+                    }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+
+        // Gráfico circular: Ventas por categoría
+        const datosVentasPorCategoria = @Html.Raw(Json.Serialize(Model.VentasPorCategoria ?? new Dictionary<string, decimal>()));
+        const ctxCategoria = document.getElementById('ventasPorCategoriaChart').getContext('2d');
+        const coloresCategoria = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1', '#fd7e14', '#20c997', '#6c757d', '#e83e8c'];
+        const ventasPorCategoriaChart = new Chart(ctxCategoria, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(datosVentasPorCategoria),
+                datasets: [{
+                    data: Object.values(datosVentasPorCategoria),
+                    backgroundColor: coloresCategoria.slice(0, Object.keys(datosVentasPorCategoria).length),
+                    borderWidth: 0,
+                    cutout: '60%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display:false },
+                    //legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true, font: { size: 12 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: S/ ${value.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        
+
+        if (Object.keys(datosVentasPorMes).length === 0) {
+            document.getElementById('ventasPorMesChart').style.display = 'none';
+            document.querySelector('#ventasPorMesChart').parentElement.innerHTML = '<div class="no-data">No hay datos de ventas por mes para mostrar.</div>';
+        }
+
+        if (Object.keys(datosVentasPorMesAnual).length === 0) {
+            document.getElementById('ventasPorMesAnualChart').style.display = 'none';
+            document.querySelector('#ventasPorMesAnualChart').parentElement.innerHTML = '<div class="no-data">No hay datos de ventas anuales para mostrar.</div>';
+        }
+
+        if (Object.keys(datosComparacionMeses).length === 0) {
+            document.getElementById('comparacionMesesChart').style.display = 'none';
+            document.querySelector('#comparacionMesesChart').parentElement.innerHTML = '<div class="no-data">No hay datos de comparación para mostrar.</div>';
+        }
+
+        if (Object.keys(datosVentasPorCategoria).length === 0) {
+            document.getElementById('ventasPorCategoriaChart').style.display = 'none';
+            document.querySelector('#ventasPorCategoriaChart').parentElement.innerHTML = '<div class="no-data">No hay datos de ventas por categoría para mostrar.</div>';
+        }
+
+        if (datosTopProductos.length === 0) {
+            document.getElementById('topProductosChart').style.display = 'none';
+            document.querySelector('#topProductosChart').parentElement.innerHTML = '<div class="no-data">No hay datos de productos vendidos para mostrar.</div>';
+        }
+    </script>
+</body>
+</html>
