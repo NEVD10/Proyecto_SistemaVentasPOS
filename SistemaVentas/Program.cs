@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaVentas.Data;
+using SistemaVentas.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +12,12 @@ builder.Services.AddDbContext<DBContexto>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BDContexto") ??
         throw new InvalidOperationException("Cadena de conexión 'BDContexto' no existe.")));
 
-// Add repository
-builder.Services.AddScoped<ClienteRepositorio>();
+// Añadir repository
+builder.Services.AddScoped<VentaRepositorio>();
 builder.Services.AddScoped<ProductoRepositorio>();
+builder.Services.AddScoped<ClienteRepositorio>();
+builder.Services.AddScoped<FacturaPdfGenerator>();
+builder.Services.AddScoped<BoletaPdfGenerator>();
 
 var app = builder.Build();
 

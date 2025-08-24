@@ -45,7 +45,7 @@ namespace SistemaVentas.Controllers
                 }
                 catch (InvalidOperationException ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message); // Mensaje general si es necesario
+                    ModelState.AddModelError(string.Empty, ex.Message); 
                 }
             }
             return View(cliente);
@@ -81,7 +81,7 @@ namespace SistemaVentas.Controllers
                 }
                 catch (InvalidOperationException ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message); // Mensaje general si es necesario
+                    ModelState.AddModelError(string.Empty, ex.Message); 
                 }
             }
             return View(cliente);

@@ -1,5 +1,420 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using System.Linq
+@model SistemaVentas.Models.Paginador<SistemaVentas.Models.Venta>
 @{
+    ViewData["Title"] = ViewBag.EsVistaFacturas == true ? "Gestión de Facturas" : "Historial de Ventas";
+}
+
+<div class="container-fluid">
+    <!-- Header con título y estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="text-primary">
+                <i class="bi bi-clock-history me-2"></i>@ViewData["Title"]
+            </h2>
+            <p class="text-muted">Gestiona y consulta todas las ventas realizadas en el sistema</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="@Url.Action("Crear", "Ventas")" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>Nueva Venta
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Total Ventas</h6>
+                            <h4 class="mb-0">@ViewBag.TotalVentasGeneral</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-graph-up" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Monto Total</h6>
+                            <h4 class="mb-0">S/ @ViewBag.MontoTotalGeneral.ToString("N2")</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-currency-dollar" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Promedio por Venta</h6>
+                            <h4 class="mb-0">S/ @ViewBag.PromedioGeneral.ToString("N2")</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-calculator" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Página Actual</h6>
+                            <h4 class="mb-0">@ViewBag.TotalVentasPagina de @Model.TotalRegistros</h4>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-file-earmark-text" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel me-2"></i>Filtros de Búsqueda
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="@Url.Action("Index", "Ventas")">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" 
+                               value="@(ViewBag.FechaInicio?.ToString("yyyy-MM-dd"))">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="fechaFin" class="form-label">Fecha Fin</label>
+                        <input type="date" class="form-control" id="fechaFin" name="fechaFin" 
+                               value="@(ViewBag.FechaFin?.ToString("yyyy-MM-dd"))">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="clienteId" class="form-label">Cliente</label>
+                        <select class="form-select" id="clienteId" name="clienteId">
+                            <option value="">-- Todos los clientes --</option>
+                            @if (ViewBag.Clientes != null)
+                            {
+                                var clientes = ViewBag.Clientes as List<SistemaVentas.Models.Cliente>;
+                                foreach (var cliente in clientes)
+                                {
+                                    if (ViewBag.ClienteId != null && ViewBag.ClienteId.ToString() == cliente.IdCliente.ToString())
+                                    {
+                                        <option value="@cliente.IdCliente" selected>@cliente.Nombres @cliente.Apellidos</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@cliente.IdCliente">@cliente.Nombres @cliente.Apellidos</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-search me-1"></i>Buscar
+                        </button>
+                        <a href="@Url.Action("Index", "Ventas")" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Información de paginación -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <p class="text-muted mb-0">
+                Mostrando @((Model.NumeroPagina - 1) * Model.TamanoPagina + 1) a 
+                @(Math.Min(Model.NumeroPagina * Model.TamanoPagina, Model.TotalRegistros)) 
+                de @Model.TotalRegistros ventas
+            </p>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                    @Model.TamanoPagina por página
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        fechaInicio = ViewBag.FechaInicio, 
+                        fechaFin = ViewBag.FechaFin, 
+                        clienteId = ViewBag.ClienteId, 
+                        pagina = 1, 
+                        tamanoPagina = 5 })">5 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        fechaInicio = ViewBag.FechaInicio, 
+                        fechaFin = ViewBag.FechaFin, 
+                        clienteId = ViewBag.ClienteId, 
+                        pagina = 1, 
+                        tamanoPagina = 10 })">10 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        fechaInicio = ViewBag.FechaInicio, 
+                        fechaFin = ViewBag.FechaFin, 
+                        clienteId = ViewBag.ClienteId, 
+                        pagina = 1, 
+                        tamanoPagina = 25 })">25 por página</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", new { 
+                        fechaInicio = ViewBag.FechaInicio, 
+                        fechaFin = ViewBag.FechaFin, 
+                        clienteId = ViewBag.ClienteId, 
+                        pagina = 1, 
+                        tamanoPagina = 50 })">50 por página</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de ventas -->
+    <div class="card">
+        <div class="card-body p-0">
+            @if (Model.Elementos != null && ((List<SistemaVentas.Models.Venta>)Model.Elementos).Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID Venta</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Usuario</th>
+                                <th>Tipo Comprobante</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var venta in Model.Elementos)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary">#@venta.IdVenta.ToString("D6")</span>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <strong>@venta.FechaVenta.ToString("dd/MM/yyyy")</strong><br>
+                                            <small class="text-muted">@venta.FechaVenta.ToString("HH:mm:ss")</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (venta.Cliente != null)
+                                        {
+                                            <div>
+                                                <strong>@venta.Cliente.Nombres @venta.Cliente.Apellidos</strong><br>
+                                                <small class="text-muted">@venta.Cliente.TipoDocumento: @venta.Cliente.NumeroDocumento</small>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Cliente General</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (venta.Usuario != null)
+                                        {
+                                            <span>@venta.Usuario.NombreUsuario</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Sistema</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge @(venta.TipoComprobante == "Factura" ? "bg-success" : "bg-warning")">@venta.TipoComprobante</span>
+                                    </td>
+                                    <td>
+                                        <strong class="text-primary">S/ @venta.MontoTotal.ToString("N2")</strong>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="@Url.Action("Details", "Ventas", new { id = venta.IdVenta })" 
+                                               class="btn btn-outline-info btn-sm" title="Ver Detalles">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="@Url.Action("VerFactura", "Ventas", new { id = venta.IdVenta })" 
+                                               class="btn btn-outline-success btn-sm" title="Ver Factura" target="_blank">
+                                                <i class="bi bi-receipt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">No se encontraron ventas</h4>
+                    <p class="text-muted">No hay ventas registradas con los filtros aplicados.</p>
+                    <a href="@Url.Action("Crear", "Ventas")" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Registrar Primera Venta
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Controles de paginación -->
+    @if (Model.TotalPaginas > 1)
+    {
+        <nav aria-label="Paginación de ventas" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Botón Anterior -->
+                @if (Model.TienePaginaAnterior)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { 
+                            fechaInicio = ViewBag.FechaInicio, 
+                            fechaFin = ViewBag.FechaFin, 
+                            clienteId = ViewBag.ClienteId, 
+                            pagina = Model.NumeroPagina - 1, 
+                            tamanoPagina = Model.TamanoPagina })">
+                            <i class="bi bi-chevron-left"></i> Anterior
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="bi bi-chevron-left"></i> Anterior</span>
+                    </li>
+                }
+
+                <!-- Números de página -->
+                @{
+                    int paginaActual = Model.NumeroPagina;
+                    int totalPaginas = Model.TotalPaginas;
+                    int inicio = Math.Max(1, paginaActual - 2);
+                    int fin = Math.Min(totalPaginas, paginaActual + 2);
+                }
+
+                @if (inicio > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { 
+                            fechaInicio = ViewBag.FechaInicio, 
+                            fechaFin = ViewBag.FechaFin, 
+                            clienteId = ViewBag.ClienteId, 
+                            pagina = 1, 
+                            tamanoPagina = Model.TamanoPagina })">1</a>
+                    </li>
+                    @if (inicio > 2)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    }
+                }
+
+                @for (int i = inicio; i <= fin; i++)
+                {
+                    @if (i == paginaActual)
+                    {
+                        <li class="page-item active">
+                            <span class="page-link">@i</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { 
+                                fechaInicio = ViewBag.FechaInicio, 
+                                fechaFin = ViewBag.FechaFin, 
+                                clienteId = ViewBag.ClienteId, 
+                                pagina = i, 
+                                tamanoPagina = Model.TamanoPagina })">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (fin < totalPaginas)
+                {
+                    @if (fin < totalPaginas - 1)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { 
+                            fechaInicio = ViewBag.FechaInicio, 
+                            fechaFin = ViewBag.FechaFin, 
+                            clienteId = ViewBag.ClienteId, 
+                            pagina = totalPaginas, 
+                            tamanoPagina = Model.TamanoPagina })">@totalPaginas</a>
+                    </li>
+                }
+
+                <!-- Botón Siguiente -->
+                @if (Model.TienePaginaSiguiente)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { 
+                            fechaInicio = ViewBag.FechaInicio, 
+                            fechaFin = ViewBag.FechaFin, 
+                            clienteId = ViewBag.ClienteId, 
+                            pagina = Model.NumeroPagina + 1, 
+                            tamanoPagina = Model.TamanoPagina })">
+                            Siguiente <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">Siguiente <i class="bi bi-chevron-right"></i></span>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+        <!-- Información adicional de paginación -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Página @Model.NumeroPagina de @Model.TotalPaginas 
+                (@Model.TotalRegistros ventas en total)
+            </small>
+        </div>
+    }
+</div>
+
+<!-- Mensajes de éxito/error -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

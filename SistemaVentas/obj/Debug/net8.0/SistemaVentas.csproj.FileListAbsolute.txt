@@ -268,3 +268,15 @@ C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVenta
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\obj\Debug\net8.0\SistemaVentas.genruntimeconfig.cache
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\obj\Debug\net8.0\ref\SistemaVentas.dll
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.barcodes.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.forms.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.io.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.kernel.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.layout.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.pdfa.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.sign.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.styledxmlparser.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.svg.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\itext.commons.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\BouncyCastle.Crypto.dll

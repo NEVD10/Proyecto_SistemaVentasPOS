@@ -1,0 +1,319 @@
+﻿@using System.Linq
+@model SistemaVentas.Models.Venta
+@{
+    ViewData["Title"] = "Nueva Venta";
+    var productos = ViewData["Productos"] as List<Producto> ?? new List<Producto>();
+    var clientes = ViewData["Clientes"] as List<Cliente> ?? new List<Cliente>();
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="bi bi-cart-plus me-2"></i>Nueva Venta
+            </h1>
+            <p class="mb-0 text-muted">Punto de venta - Registra una nueva transacción</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-list me-2"></i>Ver Historial
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Panel de Búsqueda y Productos -->
+        <div class="col-lg-8">
+            <!-- Búsqueda de Productos -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="bi bi-search me-2"></i>Buscar Productos
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="BuscarProducto" method="post" class="row">
+                        <input type="hidden" name="tipoComprobante" value="@Model.TipoComprobante" />
+                        <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
+                        <input type="hidden" name="idCliente" value="@Model.IdCliente" />
+                        <div class="col-md-8 mb-3">
+                            <label for="buscarProducto" class="form-label">Buscar por nombre o código de barras</label>
+                            <input type="text" class="form-control" id="buscarProducto" name="buscarProducto"
+                                   placeholder="Escriba el nombre del producto o escanee el código de barras...">
+                        </div>
+                        <div class="col-md-4 mb-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search me-1"></i>Buscar
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Resultados de búsqueda -->
+                    @if (ViewBag.ProductosBusqueda != null && ((List<Producto>)ViewBag.ProductosBusqueda).Count > 0)
+                    {
+                        <div id="resultadosBusqueda" class="mt-3">
+                            <h6 class="text-muted">Resultados de búsqueda:</h6>
+                            <div class="list-group">
+                                @foreach (var producto in ViewBag.ProductosBusqueda)
+                                {
+                                    <form asp-action="AgregarProducto" method="get" class="list-group-item list-group-item-action">
+                                        <input type="hidden" name="id" value="@producto.IdProducto" />
+                                        <input type="hidden" name="tipoComprobante" value="@Model.TipoComprobante" />
+                                        <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
+                                        <input type="hidden" name="idCliente" value="@Model.IdCliente" />
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">@producto.Nombre</h6>
+                                                <small class="text-muted">Código: @producto.CodigoBarras | Stock: @producto.Stock</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <input type="number" name="cantidad" value="1" min="1" max="@producto.Stock" class="form-control form-control-sm me-2" style="width: 80px;" />
+                                                <strong class="text-success me-2">@producto.PrecioVenta.ToString("N2")</strong>
+                                                <button type="submit" class="btn btn-primary btn-sm">Agregar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Carrito de Compras -->
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="bi bi-cart me-2"></i>Productos en la Venta
+                    </h6>
+                    <a asp-action="LimpiarCarrito" asp-route-tipoComprobante="@Model.TipoComprobante" asp-route-metodoPago="@Model.MetodoPago" asp-route-idCliente="@Model.IdCliente" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-trash me-1"></i>Limpiar Todo
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (!Model.DetalleVentas?.Any() ?? true)
+                    {
+                        <div id="carritoVacio" class="text-center py-5">
+                            <i class="bi bi-cart display-1 text-muted"></i>
+                            <h4 class="mt-3 text-muted">Carrito vacío</h4>
+                            <p class="text-muted">Busque y agregue productos para comenzar la venta</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="tablaCarrito">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Precio Unit.</th>
+                                            <th>Cantidad</th>
+                                            <th>Subtotal</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var detalle in Model.DetalleVentas)
+                                        {
+                                            var producto = productos.FirstOrDefault(p => p.IdProducto == detalle.IdProducto);
+                                            <tr>
+                                                <td>
+                                                    <strong>@(producto?.Nombre ?? "No encontrado")</strong><br>
+                                                    <small class="text-muted">Stock disponible: @(producto?.Stock ?? 0)</small>
+                                                </td>
+                                                <td>@detalle.PrecioUnitario.ToString("N2")</td>
+                                                <td>@detalle.Cantidad</td>
+                                                <td><strong>@detalle.SubtotalLinea.ToString("N2")</strong></td>
+                                                <td>
+                                                    <a asp-action="QuitarProducto" asp-route-id="@detalle.IdProducto" asp-route-tipoComprobante="@Model.TipoComprobante" asp-route-metodoPago="@Model.MetodoPago" asp-route-idCliente="@Model.IdCliente" class="btn btn-outline-danger btn-sm">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Cliente y Totales -->
+        <div class="col-lg-4">
+            <!-- Selección de Cliente -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="bi bi-person me-2"></i>Cliente
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="BuscarCliente" method="post" class="mb-3">
+                        <input type="hidden" name="tipoComprobante" value="@Model.TipoComprobante" />
+                        <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
+                        <input type="hidden" name="idCliente" value="@Model.IdCliente" />
+                        <label for="buscarCliente" class="form-label">Buscar Cliente (Opcional)</label>
+                        <input type="text" class="form-control" id="buscarCliente" name="buscarCliente"
+                               placeholder="Nombre, apellido o documento...">
+                        <button type="submit" class="btn btn-primary mt-2">Buscar</button>
+                    </form>
+
+                    @if (Model.IdCliente.HasValue)
+                    {
+                        var cliente = clientes.FirstOrDefault(c => c.IdCliente == Model.IdCliente);
+                        <div id="clienteSeleccionado">
+                            <div class="alert alert-info">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>@cliente?.Nombres @cliente?.Apellidos</strong><br>
+                                        <small>@cliente?.NumeroDocumento</small>
+                                    </div>
+                                    <a asp-action="QuitarCliente" asp-route-tipoComprobante="@Model.TipoComprobante" asp-route-metodoPago="@Model.MetodoPago" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-x"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @if (ViewBag.ClientesBusqueda != null && ((List<Cliente>)ViewBag.ClientesBusqueda).Count > 0)
+                        {
+                            <div id="resultadosCliente" class="mt-2">
+                                <div class="list-group">
+                                    @foreach (var cliente in ViewBag.ClientesBusqueda)
+                                    {
+                                        <a asp-action="SeleccionarCliente" asp-route-id="@cliente.IdCliente" asp-route-tipoComprobante="@Model.TipoComprobante" asp-route-metodoPago="@Model.MetodoPago" class="list-group-item list-group-item-action">
+                                            <div>
+                                                <h6 class="mb-1">@cliente.Nombres @cliente.Apellidos</h6>
+                                                <small class="text-muted">@cliente.NumeroDocumento</small>
+                                            </div>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+
+                    <form asp-action="RegistrarCliente" method="post" class="mt-3">
+                        <input type="hidden" name="tipoComprobante" value="@Model.TipoComprobante" />
+                        <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
+                        <div class="mb-3">
+                            <label for="nuevoClienteNombre" class="form-label">Nuevo Cliente - Nombre</label>
+                            <input type="text" class="form-control" id="nuevoClienteNombre" name="nuevoClienteNombre" placeholder="Nombre del cliente">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nuevoClienteDNI" class="form-label">DNI</label>
+                            <input type="text" class="form-control" id="nuevoClienteDNI" name="nuevoClienteDNI" placeholder="DNI del cliente">
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="bi bi-plus-circle me-1"></i>Registrar Cliente
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Resumen de Totales -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="bi bi-calculator me-2"></i>Resumen de Venta
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="ProcesarVenta" method="post">
+                        <input type="hidden" name="tipoComprobante" value="@Model.TipoComprobante" />
+                        <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
+                        <input type="hidden" name="idCliente" value="@Model.IdCliente" />
+                        <div class="mb-3">
+                            <label for="tipoComprobante" class="form-label">Tipo de Comprobante</label>
+                            <select name="tipoComprobante" class="form-control">
+                                <option value="Boleta" selected="@(Model.TipoComprobante == "Boleta")">Boleta</option>
+                                <option value="Factura" selected="@(Model.TipoComprobante == "Factura")">Factura</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="metodoPago" class="form-label">Método de Pago</label>
+                            <select name="metodoPago" class="form-control">
+                                <option value="Efectivo" selected="@(Model.MetodoPago == "Efectivo")">Efectivo</option>
+                                <option value="Tarjeta" selected="@(Model.MetodoPago == "Tarjeta")">Tarjeta</option>
+                                <option value="Yape" selected="@(Model.MetodoPago == "Yape")">Yape</option>
+                                <option value="Plin" selected="@(Model.MetodoPago == "Plin")">Plin</option>
+                                <option value="Transferencia" selected="@(Model.MetodoPago == "Transferencia")">Transferencia</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="idUsuario" class="form-label">Usuario</label>
+                            <input type="number" name="idUsuario" class="form-control" required />
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <strong>@Model.Subtotal.ToString("N2")</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>IGV (18%):</span>
+                            <strong>@Model.MontoIGV.ToString("N2")</strong>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="h5">Total:</span>
+                            <strong class="h4 text-success">@Model.MontoTotal.ToString("N2")</strong>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg @(Model.DetalleVentas?.Any() != true ? "disabled" : "")">
+                                <i class="bi bi-check-circle me-2"></i>Procesar Venta
+                            </button>
+                            <a asp-action="CancelarVenta" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-2"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.VentaExitosa != null && ViewBag.VentaExitosa)
+{
+    <div class="modal fade show" id="modalConfirmacion" tabindex="-1" style="display:block;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-check-circle text-success me-2"></i>Venta Procesada
+                    </h5>
+                    <a asp-action="CerrarModal" class="btn-close" aria-label="Close"></a>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3">¡Venta realizada exitosamente!</h4>
+                        <p class="text-muted">La venta ha sido procesada y el inventario actualizado.</p>
+                        <div class="alert alert-info">
+                            <strong>Total de la venta: @ViewBag.TotalVenta.ToString("N2")</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a asp-action="VerFactura" asp-route-id="@ViewBag.VentaId" class="btn btn-primary">
+                        <i class="bi bi-file-earmark-text me-1"></i>Ver Factura
+                    </a>
+                    <a asp-action="CerrarModal" class="btn btn-success">
+                        <i class="bi bi-plus-circle me-1"></i>Nueva Venta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

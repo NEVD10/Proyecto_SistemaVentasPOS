@@ -83,12 +83,12 @@ namespace SistemaVentas.Data
         {
             using var connection = new SqlConnection(_connectionString);
             var sql = @"
-        SELECT 
-            p.IdProducto, p.Nombre, p.CodigoBarras, p.PrecioCosto, p.PrecioVenta, p.Stock, p.Marca, p.IdCategoria AS ProdIdCategoria, p.Estado,
-            c.IdCategoria, c.Nombre
-        FROM Producto p
-        LEFT JOIN Categoria c ON p.IdCategoria = c.IdCategoria
-        WHERE p.IdProducto = @Id";
+                SELECT 
+                    p.IdProducto, p.Nombre, p.CodigoBarras, p.PrecioCosto, p.PrecioVenta, p.Stock, p.Marca, p.IdCategoria AS ProdIdCategoria, p.Estado,
+                    c.IdCategoria, c.Nombre
+                FROM Producto p
+                LEFT JOIN Categoria c ON p.IdCategoria = c.IdCategoria
+                WHERE p.IdProducto = @Id";
 
             var producto = (await connection.QueryAsync<Producto, Categoria, Producto>(
                 sql,
@@ -97,12 +97,12 @@ namespace SistemaVentas.Data
                     if (c != null && c.IdCategoria != 0 && !string.IsNullOrEmpty(c.Nombre))
                     {
                         p.Categoria = c;
-                        p.IdCategoria = c.IdCategoria; // Asegura que IdCategoria se actualice
+                        p.IdCategoria = c.IdCategoria;
                     }
                     else
                     {
                         p.Categoria = new Categoria { Nombre = "Sin categoría" };
-                        p.IdCategoria = 0; // O el valor por defecto si no hay categoría
+                        p.IdCategoria = 0;
                     }
                     return p;
                 },
@@ -110,6 +110,39 @@ namespace SistemaVentas.Data
                 splitOn: "IdCategoria")).FirstOrDefault();
 
             return producto ?? new Producto { Categoria = new Categoria { Nombre = "Sin categoría" }, IdCategoria = 0 };
+        }
+
+        public async Task<Producto> ObtenerPorCodigoBarras(string codigoBarras)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var sql = @"
+                SELECT 
+                    p.IdProducto, p.Nombre, p.CodigoBarras, p.PrecioCosto, p.PrecioVenta, p.Stock, p.Marca, p.IdCategoria AS ProdIdCategoria, p.Estado,
+                    c.IdCategoria, c.Nombre
+                FROM Producto p
+                LEFT JOIN Categoria c ON p.IdCategoria = c.IdCategoria
+                WHERE p.CodigoBarras = @CodigoBarras";
+
+            var producto = (await connection.QueryAsync<Producto, Categoria, Producto>(
+                sql,
+                (p, c) =>
+                {
+                    if (c != null && c.IdCategoria != 0 && !string.IsNullOrEmpty(c.Nombre))
+                    {
+                        p.Categoria = c;
+                        p.IdCategoria = c.IdCategoria;
+                    }
+                    else
+                    {
+                        p.Categoria = new Categoria { Nombre = "Sin categoría" };
+                        p.IdCategoria = 0;
+                    }
+                    return p;
+                },
+                new { CodigoBarras = codigoBarras },
+                splitOn: "IdCategoria")).FirstOrDefault();
+
+            return producto;
         }
 
         public async Task Crear(Producto producto)
