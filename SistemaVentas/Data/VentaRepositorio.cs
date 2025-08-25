@@ -26,28 +26,65 @@ namespace SistemaVentas.Data
 
             try
             {
+                // Validar datos antes de insertar
+                if (venta.IdUsuario <= 0)
+                    throw new InvalidOperationException("El IdUsuario no es válido.");
+
+                if (venta.DetalleVentas == null || !venta.DetalleVentas.Any())
+                    throw new InvalidOperationException("No se proporcionaron detalles de venta.");
+
+                foreach (var detalle in venta.DetalleVentas)
+                {
+                    if (detalle.IdProducto <= 0 || detalle.Cantidad <= 0 || detalle.PrecioUnitario <= 0 || detalle.SubtotalLinea <= 0)
+                        throw new InvalidOperationException("Datos inválidos en los detalles de la venta.");
+                }
+
+                // Insertar la venta
                 var idVenta = await connection.ExecuteScalarAsync<int>(
                     @"INSERT INTO Venta (IdCliente, IdUsuario, FechaVenta, TipoComprobante, MetodoPago, Subtotal, MontoIGV, MontoTotal)
-                      VALUES (@IdCliente, @IdUsuario, @FechaVenta, @TipoComprobante, @MetodoPago, @Subtotal, @MontoIGV, @MontoTotal);
-                      SELECT SCOPE_IDENTITY()",
-                    venta, transaction);
+              VALUES (@IdCliente, @IdUsuario, @FechaVenta, @TipoComprobante, @MetodoPago, @Subtotal, @MontoIGV, @MontoTotal);
+              SELECT SCOPE_IDENTITY()",
+                    new
+                    {
+                        venta.IdCliente,
+                        venta.IdUsuario,
+                        venta.FechaVenta,
+                        venta.TipoComprobante,
+                        venta.MetodoPago,
+                        venta.Subtotal,
+                        venta.MontoIGV,
+                        venta.MontoTotal
+                    }, transaction);
 
+                // Insertar los detalles de la venta
                 foreach (var detalle in venta.DetalleVentas)
                 {
                     detalle.IdVenta = idVenta;
                     await connection.ExecuteAsync(
                         @"INSERT INTO DetalleVenta (IdVenta, IdProducto, Cantidad, PrecioUnitario, SubtotalLinea)
-                          VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioUnitario, @SubtotalLinea)",
-                        detalle, transaction);
+                  VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioUnitario, @SubtotalLinea)",
+                        new
+                        {
+                            IdVenta = detalle.IdVenta,
+                            IdProducto = detalle.IdProducto,
+                            Cantidad = detalle.Cantidad,
+                            PrecioUnitario = detalle.PrecioUnitario,
+                            SubtotalLinea = detalle.SubtotalLinea
+                        }, transaction);
                 }
 
                 transaction.Commit();
                 return idVenta;
             }
-            catch
+            catch (SqlException ex)
             {
                 transaction.Rollback();
-                throw new InvalidOperationException("Error al crear la venta.");
+                throw new InvalidOperationException($"Error al crear la venta: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new InvalidOperationException($"Error inesperado al crear la venta: {ex.Message}", ex);
             }
         }
 

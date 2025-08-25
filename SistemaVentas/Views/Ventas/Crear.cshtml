@@ -1,5 +1,4 @@
-﻿@using System.Linq
-@model SistemaVentas.Models.Venta
+﻿@model SistemaVentas.Models.Venta
 @{
     ViewData["Title"] = "Nueva Venta";
     var productos = ViewData["Productos"] as List<Producto> ?? new List<Producto>();
@@ -210,6 +209,10 @@
                             <label for="nuevoClienteDNI" class="form-label">DNI</label>
                             <input type="text" class="form-control" id="nuevoClienteDNI" name="nuevoClienteDNI" placeholder="DNI del cliente">
                         </div>
+                        <div class="mb-3">
+                            <label for="nuevoClienteEmail" class="form-label">Email (Opcional)</label>
+                            <input type="email" class="form-control" id="nuevoClienteEmail" name="nuevoClienteEmail" placeholder="Email del cliente">
+                        </div>
                         <button type="submit" class="btn btn-outline-primary btn-sm w-100">
                             <i class="bi bi-plus-circle me-1"></i>Registrar Cliente
                         </button>
@@ -226,29 +229,25 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="ProcesarVenta" method="post">
-                        <input type="hidden" name="tipoComprobante" value="@Model.TipoComprobante" />
-                        <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
                         <input type="hidden" name="idCliente" value="@Model.IdCliente" />
                         <div class="mb-3">
-                            <label for="tipoComprobante" class="form-label">Tipo de Comprobante</label>
-                            <select name="tipoComprobante" class="form-control">
-                                <option value="Boleta" selected="@(Model.TipoComprobante == "Boleta")">Boleta</option>
+                            <label asp-for="TipoComprobante" class="form-label">Tipo de Comprobante</label>
+                            <select asp-for="TipoComprobante" name="tipoComprobante" class="form-control">
+                                <option value="Boleta" selected="@(Model.TipoComprobante == "Boleta" || string.IsNullOrEmpty(Model.TipoComprobante))">Boleta</option>
                                 <option value="Factura" selected="@(Model.TipoComprobante == "Factura")">Factura</option>
                             </select>
+                            <span asp-validation-for="TipoComprobante" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="metodoPago" class="form-label">Método de Pago</label>
-                            <select name="metodoPago" class="form-control">
-                                <option value="Efectivo" selected="@(Model.MetodoPago == "Efectivo")">Efectivo</option>
+                            <label asp-for="MetodoPago" class="form-label">Método de Pago</label>
+                            <select asp-for="MetodoPago" name="metodoPago" class="form-control">
+                                <option value="Efectivo" selected="@(Model.MetodoPago == "Efectivo" || string.IsNullOrEmpty(Model.MetodoPago))">Efectivo</option>
                                 <option value="Tarjeta" selected="@(Model.MetodoPago == "Tarjeta")">Tarjeta</option>
                                 <option value="Yape" selected="@(Model.MetodoPago == "Yape")">Yape</option>
                                 <option value="Plin" selected="@(Model.MetodoPago == "Plin")">Plin</option>
                                 <option value="Transferencia" selected="@(Model.MetodoPago == "Transferencia")">Transferencia</option>
                             </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="idUsuario" class="form-label">Usuario</label>
-                            <input type="number" name="idUsuario" class="form-control" required />
+                            <span asp-validation-for="MetodoPago" class="text-danger"></span>
                         </div>
                         <div class="form-check mb-3">
                             <input type="checkbox" class="form-check-input" id="enviarCorreo" name="enviarCorreo" value="true">
@@ -282,6 +281,7 @@
     </div>
 </div>
 
+<!-- Modal de confirmación -->
 @if (ViewBag.VentaExitosa != null && ViewBag.VentaExitosa)
 {
     <div class="modal fade show" id="modalConfirmacion" tabindex="-1" style="display:block;" aria-hidden="true">
@@ -323,7 +323,7 @@
                         <i class="bi bi-file-earmark-text me-1"></i>Ver Comprobante
                     </a>
                     <a asp-action="Index" class="btn btn-success">
-                        <i class="bi bi-x-circle me-2"></i>Nueva Venta
+                        <i class="bi bi-cart-plus me-2"></i>Nueva Venta
                     </a>
                 </div>
             </div>
@@ -332,7 +332,5 @@
 }
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

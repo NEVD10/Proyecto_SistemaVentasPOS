@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SistemaVentas.Data;
 using SistemaVentas.Models;
 using SistemaVentas.Services;
@@ -329,90 +330,154 @@ namespace SistemaVentas.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcesarVenta(string tipoComprobante, string metodoPago, int? idCliente, int idUsuario, bool enviarCorreo = false)
+        [Authorize]
+        public async Task<IActionResult> ProcesarVenta(string tipoComprobante, string metodoPago, int? idCliente, bool enviarCorreo = false)
         {
-            var viewModel = ObtenerVentaDeTempData() ?? new Venta { DetalleVentas = new List<DetalleVenta>() };
-            viewModel.TipoComprobante = tipoComprobante;
-            viewModel.MetodoPago = metodoPago;
-            viewModel.IdCliente = idCliente;
-            viewModel.IdUsuario = idUsuario;
-            viewModel.FechaVenta = DateTime.Now;
-
-            if (viewModel.DetalleVentas == null || viewModel.DetalleVentas.Count == 0)
+            // Paso 1: Verificar usuario autenticado
+            _logger.LogInformation("Comenzando a procesar una nueva venta.");
+            int? idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+            if (idUsuario == null)
             {
-                ModelState.AddModelError("", "Debe agregar al menos un producto.");
-                GuardarVentaEnTempData(viewModel);
-                ViewData["Productos"] = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
-                ViewData["Clientes"] = (await _clienteRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
-                ViewBag.ProductosBusqueda = new List<Producto>();
-                ViewBag.ClientesBusqueda = new List<Cliente>();
-                return View("Crear", viewModel);
+                _logger.LogWarning("No se encontró un usuario autenticado.");
+                ModelState.AddModelError("", "Por favor, inicia sesión para continuar.");
+                return RedirectToAction("IniciarSesion", "Usuarios");
+            }
+
+            // Paso 2: Cargar la venta actual o crear una nueva
+            var venta = ObtenerVentaDeTempData() ?? new Venta { DetalleVentas = new List<DetalleVenta>() };
+            _logger.LogInformation("Venta cargada. Productos en el carrito: {0}", venta.DetalleVentas?.Count ?? 0);
+
+            // Paso 3: Validar y asignar datos de la venta
+            if (string.IsNullOrEmpty(tipoComprobante))
+            {
+                _logger.LogWarning("No se proporcionó el tipo de comprobante.");
+                ModelState.AddModelError("TipoComprobante", "Debes seleccionar un tipo de comprobante.");
+                await CargarDatosVista(venta);
+                return View("Crear", venta);
+            }
+            venta.TipoComprobante = tipoComprobante;
+
+            venta.MetodoPago = string.IsNullOrEmpty(metodoPago) ? "Efectivo" : metodoPago;
+            venta.IdCliente = idCliente;
+            venta.IdUsuario = idUsuario.Value;
+            venta.FechaVenta = DateTime.Now;
+
+            // Paso 4: Verificar que haya productos en el carrito
+            if (venta.DetalleVentas == null || venta.DetalleVentas.Count == 0)
+            {
+                _logger.LogWarning("El carrito está vacío.");
+                ModelState.AddModelError("", "Debes agregar al menos un producto.");
+                GuardarVentaEnTempData(venta);
+                await CargarDatosVista(venta);
+                return View("Crear", venta);
+            }
+
+            // Paso 5: Validar cliente si se solicita enviar correo
+            if (enviarCorreo && !idCliente.HasValue)
+            {
+                _logger.LogWarning("No se seleccionó un cliente para enviar el correo.");
+                ModelState.AddModelError("IdCliente", "Debes seleccionar un cliente para enviar el comprobante por correo.");
+                GuardarVentaEnTempData(venta);
+                await CargarDatosVista(venta);
+                return View("Crear", venta);
             }
 
             try
             {
-                RecalcularTotales(viewModel);
-                int idVenta = await _ventaRepositorio.CrearVentaConDetalles(viewModel);
+                // Paso 6: Calcular totales
+                RecalcularTotales(venta);
+                _logger.LogInformation("Total calculado: S/. {0}", venta.MontoTotal);
+                _logger.LogInformation("Detalles de la venta - Usuario: {0}, Cliente: {1}, Tipo: {2}, Productos: {3}",
+                    venta.IdUsuario, venta.IdCliente, venta.TipoComprobante, venta.DetalleVentas?.Count ?? 0);
 
-                foreach (var detalle in viewModel.DetalleVentas)
+                // Paso 7: Guardar la venta
+                int idVenta = await _ventaRepositorio.CrearVentaConDetalles(venta);
+                _logger.LogInformation("Venta guardada con ID: {0}", idVenta);
+
+                // Paso 8: Actualizar stock
+                foreach (var detalle in venta.DetalleVentas)
                 {
                     var producto = await _productoRepositorio.ObtenerPorId(detalle.IdProducto);
                     if (producto != null)
                     {
+                        if (producto.Stock < detalle.Cantidad)
+                        {
+                            _logger.LogWarning("No hay suficiente stock para el producto ID: {0}", detalle.IdProducto);
+                            throw new InvalidOperationException($"No hay stock suficiente para el producto ID {detalle.IdProducto}.");
+                        }
                         producto.Stock -= detalle.Cantidad;
                         await _productoRepositorio.Actualizar(producto);
+                        _logger.LogInformation("Stock actualizado para el producto ID: {0}", detalle.IdProducto);
                     }
                 }
 
-                // Generar y enviar el comprobante si se solicita
+                // Paso 9: Enviar correo si se solicita
                 if (enviarCorreo && idCliente.HasValue)
                 {
-                    var venta = await _ventaRepositorio.ObtenerPorId(idVenta);
-                    var productosLista = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
-                    byte[] pdfBytes = _servicioFacturacion.GenerarComprobante(venta, productosLista);
-                    var cliente = (await _clienteRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.FirstOrDefault(c => c.IdCliente == idCliente);
+                    var ventaGuardada = await _ventaRepositorio.ObtenerPorId(idVenta);
+                    var listaProductos = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
+                    byte[] pdfBytes = _servicioFacturacion.GenerarComprobante(ventaGuardada, listaProductos);
+
+                    var cliente = (await _clienteRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos
+                        .FirstOrDefault(c => c.IdCliente == idCliente);
                     if (cliente?.Email != null)
                     {
                         try
                         {
-                            await _servicioCorreo.EnviarComprobantePorCorreo(cliente.Email, venta, pdfBytes);
+                            _logger.LogInformation("Intentando enviar correo a: {0} para venta ID: {1}", cliente.Email, idVenta);
+                            await _servicioCorreo.EnviarComprobantePorCorreo(cliente.Email, ventaGuardada, pdfBytes);
                             ViewBag.CorreoEnviado = true;
+                            _logger.LogInformation("Correo enviado exitosamente para la venta ID: {0}", idVenta);
                         }
                         catch (Exception ex)
                         {
                             ViewBag.CorreoEnviado = false;
-                            ViewBag.ErrorCorreo = $"Error al enviar el correo: {ex.Message}";
-                            _logger.LogError(ex, "Fallo al enviar correo para la venta {IdVenta}", idVenta);
+                            ViewBag.ErrorCorreo = $"Fallo al enviar el correo: {ex.Message}";
+                            _logger.LogError(ex, "Error al enviar el correo para la venta ID: {0}", idVenta);
                         }
                     }
                     else
                     {
                         ViewBag.CorreoEnviado = false;
-                        ViewBag.ErrorCorreo = "No se pudo enviar el correo: el cliente no tiene correo registrado.";
+                        ViewBag.ErrorCorreo = "No se puede enviar el correo porque el cliente no tiene un email registrado.";
+                        _logger.LogWarning("Cliente sin email para la venta ID: {0}", idVenta);
                     }
                 }
 
-                TempData["Success"] = "Venta procesada exitosamente.";
-                TempData.Clear();
+                // Paso 10: Finalizar y mostrar resultado
+                TempData["Success"] = "¡Venta procesada con éxito!";
+                TempData.Remove("VentaEnProgreso");
                 ViewBag.VentaExitosa = true;
                 ViewBag.VentaId = idVenta;
-                ViewBag.TotalVenta = viewModel.MontoTotal;
-                ViewData["Productos"] = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
-                ViewData["Clientes"] = (await _clienteRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
-                ViewBag.ProductosBusqueda = new List<Producto>();
-                ViewBag.ClientesBusqueda = new List<Cliente>();
-                return View("Crear", new Venta { DetalleVentas = new List<DetalleVenta>() });
+                ViewBag.TotalVenta = venta.MontoTotal;
+                await CargarDatosVista(new Venta { DetalleVentas = new List<DetalleVenta>(), TipoComprobante = "Boleta", MetodoPago = "Efectivo" });
+                return View("Crear", new Venta { DetalleVentas = new List<DetalleVenta>(), TipoComprobante = "Boleta", MetodoPago = "Efectivo" });
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogError("Error al procesar la venta: {0}", ex.Message);
                 ModelState.AddModelError("", ex.Message);
-                GuardarVentaEnTempData(viewModel);
-                ViewData["Productos"] = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
-                ViewData["Clientes"] = (await _clienteRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
-                ViewBag.ProductosBusqueda = new List<Producto>();
-                ViewBag.ClientesBusqueda = new List<Cliente>();
-                return View("Crear", viewModel);
+                GuardarVentaEnTempData(venta);
+                await CargarDatosVista(venta);
+                return View("Crear", venta);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error inesperado al procesar la venta: {0}", ex.Message);
+                ModelState.AddModelError("", "Ocurrió un problema. Intenta de nuevo.");
+                GuardarVentaEnTempData(venta);
+                await CargarDatosVista(venta);
+                return View("Crear", venta);
+            }
+        }
+
+        // Método auxiliar para reducir duplicación
+        private async Task CargarDatosVista(Venta viewModel)
+        {
+            ViewData["Productos"] = (await _productoRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
+            ViewData["Clientes"] = (await _clienteRepositorio.ObtenerTodos(1, int.MaxValue)).Elementos.ToList();
+            ViewBag.ProductosBusqueda = new List<Producto>();
+            ViewBag.ClientesBusqueda = new List<Cliente>();
         }
 
         public async Task<IActionResult> CancelarVenta()
