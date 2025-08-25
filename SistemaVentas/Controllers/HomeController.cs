@@ -1,32 +1,23 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SistemaVentas.Models;
+using SistemaVentas.Services;
+using System;
 
 namespace SistemaVentas.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IServicioReporte _servicioReporte;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IServicioReporte servicioReporte)
         {
-            _logger = logger;
+            _servicioReporte = servicioReporte ?? throw new ArgumentNullException(nameof(servicioReporte));
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(DateTime? fecha)
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var reporte = await _servicioReporte.GenerarReporteDiario(fecha);
+            ViewData["fecha"] = fecha?.ToString("yyyy-MM-dd");
+            return View(reporte);
         }
     }
 }

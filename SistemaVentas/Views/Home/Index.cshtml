@@ -1,133 +1,191 @@
-﻿@model List<SistemaVentas.Models.VentaReporte>
+﻿@model SistemaVentas.Models.ReporteDiario
 
 @{
-    ViewData["Title"] = "Reportes de Ventas";
+    ViewData["Title"] = "Reporte Diario";
+    var fechaFormateada = ViewData["fecha"] as string ?? DateTime.Today.ToString("dd/MM/yyyy");
 }
 
-<h2>Reportes de Ventas</h2>
-
-<form asp-action="Index" method="get">
-    <div class="form-group">
-        <label>Fecha Inicio:</label>
-        <input type="date" name="fechaInicio" class="form-control" value="@ViewData["fechaInicio"]" />
-    </div>
-    <div class="form-group">
-        <label>Fecha Fin:</label>
-        <input type="date" name="fechaFin" class="form-control" value="@ViewData["fechaFin"]" />
-    </div>
-    <div class="form-group">
-        <label>Método de Pago:</label>
-        <input type="text" name="metodoPago" class="form-control" value="@ViewData["metodoPago"]" />
-    </div>
-    <div class="form-group">
-        <label>Tipo Comprobante:</label>
-        <input type="text" name="tipoComprobante" class="form-control" value="@ViewData["tipoComprobante"]" />
-    </div>
-    <div class="form-group">
-        <label>ID Cliente:</label>
-        <input type="number" name="idCliente" class="form-control" value="@ViewData["idCliente"]" />
-    </div>
-    <button type="submit" class="btn btn-primary">Filtrar</button>
-</form>
-
-@if (Model != null && Model.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID Venta</th>
-                <th>Fecha</th>
-                <th>Tipo Comprobante</th>
-                <th>Método Pago</th>
-                <th>Cliente</th>
-                <th>Monto Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.IdVenta</td>
-                    <td>@item.FechaVenta.ToString("dd/MM/yyyy")</td>
-                    <td>@item.TipoComprobante</td>
-                    <td>@item.MetodoPago</td>
-                    <td>@item.ClienteNombre</td>
-                    <td>@item.MontoTotal.ToString("N2")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div>
-        <h3>Gráfico de Barras (Ventas por Día)</h3>
-        <canvas id="barrasChart" width="400" height="200"></canvas>
+<div class="container">
+    <div class="header">
+        <h1>Reporte de Ventas</h1>
     </div>
 
-    <div>
-        <h3>Gráfico de Líneas (Ventas por Mes)</h3>
-        <canvas id="lineasChart" width="400" height="200"></canvas>
-    </div>
-}
-else
-{
-    <p>No hay datos para mostrar.</p>
-}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Gráfico de Barras
-    var ctxBarras = document.getElementById('barrasChart').getContext('2d');
-    var datosBarras = @Html.Raw(Json.Serialize(ViewBag.DatosBarras ?? new Dictionary<string, decimal>()));
-    if (Object.keys(datosBarras).length > 0) {
-        new Chart(ctxBarras, {
-            type: 'bar',
-            data: {
-                labels: Object.keys(datosBarras),
-                datasets: [{
-                    label: 'Ventas por Día',
-                    data: Object.values(datosBarras),
-                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF']
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    } else {
-        document.getElementById('barrasChart').style.display = 'none';
-        document.querySelector('#barrasChart').parentElement.innerHTML = '<p>No hay datos para mostrar en el gráfico de barras.</p>';
+    @if (ViewBag.Error != null)
+    {
+        <div class="error-message">@ViewBag.Error</div>
     }
 
-    // Gráfico de Líneas
-    var ctxLineas = document.getElementById('lineasChart').getContext('2d');
-    var datosLineas = @Html.Raw(Json.Serialize(ViewBag.DatosLineas ?? new Dictionary<string, decimal>()));
-    if (Object.keys(datosLineas).length > 0) {
-        new Chart(ctxLineas, {
+    <div class="kpi-section">
+        <div class="kpi-card monto-total">
+            <div class="kpi-title">Monto Total del Día</div>
+            <div class="kpi-value">S/ @Model.MontoTotalDia.ToString("N2")</div>
+        </div>
+        <div class="kpi-card transacciones">
+            <div class="kpi-title">Número de Transacciones</div>
+            <div class="kpi-value">@Model.NumeroTransacciones</div>
+        </div>
+        <div class="kpi-card ganancias">
+            <div class="kpi-title">Ganancias del Día</div>
+            <div class="kpi-value">S/ @Model.GananciasDia.ToString("N2")</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-graph-up me-2"></i>
+                        Tendencia de Ventas por Hora - @fechaFormateada
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 400px;">
+                        <canvas id="ventasPorHoraChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Segunda fila: Gráfico circular y tabla -->
+    <div class="row">
+        <!-- Gráfico 3: Ventas por Categoría -->
+        <div class="col-md-5 mb-4">
+            <div class="chart-card h-100">
+                <div class="chart-title">Ventas por Categoría</div>
+                <div class="chart-container doughnut">
+                    <canvas id="ventasPorCategoriaChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla: Top 10 Productos -->
+        <div class="col-md-7 mb-4">
+            <div class="table-section h-100">
+                <div class="table-title">Top 5 Productos Más Vendidos</div>
+                @if (Model.TopProductos?.Any() == true)
+                {
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th class="rank">#</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th class="cantidad">Cantidad Vendida</th>
+                                <th class="monto">Monto Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Math.Min(Model.TopProductos.Count, 5); i++)
+                            {
+                                var producto = Model.TopProductos[i];
+                                <tr>
+                                    <td class="rank">@(i + 1)</td>
+                                    <td>@producto.NombreProducto</td>
+                                    <td>@producto.Categoria</td>
+                                    <td class="cantidad">@producto.CantidadVendida</td>
+                                    <td class="monto">S/ @producto.MontoTotal.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="no-data">No hay datos de productos vendidos para mostrar. Verifica la carga de DetalleVentas y Producto en el repositorio.</div>
+                }
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+@section Scripts {
+    <script>
+        // Gráfico de líneas: Tendencia de ventas por hora
+        const datosVentasPorHora = @Html.Raw(Json.Serialize(Model.VentasPorHora ?? new Dictionary<string, decimal>()));
+        const datosVentasPorCategoria = @Html.Raw(Json.Serialize(Model.VentasPorCategoria ?? new Dictionary<string, decimal>()));
+
+        const ctxHora = document.getElementById('ventasPorHoraChart').getContext('2d');
+        const ventasPorHoraChart = new Chart(ctxHora, {
             type: 'line',
             data: {
-                labels: Object.keys(datosLineas),
+                labels: Object.keys(datosVentasPorHora),
                 datasets: [{
-                    label: 'Ventas por Mes',
-                    data: Object.values(datosLineas),
-                    borderColor: '#FF6384',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    fill: true
+                    label: 'Ventas (S/)',
+                    data: Object.values(datosVentasPorHora),
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#007bff',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
                 scales: {
+                    x: { grid: { display: false }, ticks: { color: '#6c757d' } },
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        grid: { color: '#f1f3f4' },
+                        ticks: { color: '#6c757d', callback: function(value) { return 'S/ ' + value.toLocaleString(); } }
+                    }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+
+        // Gráfico circular: Ventas por categoría
+        const ctxCategoria = document.getElementById('ventasPorCategoriaChart').getContext('2d');
+        const coloresCategoria = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1', '#fd7e14', '#20c997', '#6c757d', '#e83e8c'];
+        const ventasPorCategoriaChart = new Chart(ctxCategoria, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(datosVentasPorCategoria),
+                datasets: [{
+                    data: Object.values(datosVentasPorCategoria),
+                    backgroundColor: coloresCategoria.slice(0, Object.keys(datosVentasPorCategoria).length),
+                    borderWidth: 0,
+                    cutout: '60%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true, font: { size: 12 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: S/ ${value.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
                     }
                 }
             }
         });
-    } else {
-        document.getElementById('lineasChart').style.display = 'none';
-        document.querySelector('#lineasChart').parentElement.innerHTML = '<p>No hay datos para mostrar en el gráfico de líneas.</p>';
-    }
-</script>
+
+        if (Object.keys(datosVentasPorHora).length === 0) {
+            document.getElementById('ventasPorHoraChart').style.display = 'none';
+            document.querySelector('#ventasPorHoraChart').parentElement.innerHTML = '<div class="no-data">No hay datos de ventas por hora para mostrar.</div>';
+        }
+
+        if (Object.keys(datosVentasPorCategoria).length === 0) {
+            document.getElementById('ventasPorCategoriaChart').style.display = 'none';
+            document.querySelector('#ventasPorCategoriaChart').parentElement.innerHTML = '<div class="no-data">No hay datos de ventas por categoría para mostrar.</div>';
+        }
+    </script>
+}

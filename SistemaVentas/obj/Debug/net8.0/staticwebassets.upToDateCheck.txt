@@ -1,6 +1,7 @@
 wwwroot\css\estilos.css
 wwwroot\css\reporte.css
 wwwroot\css\site.css
+wwwroot\css\_dashboard.css
 wwwroot\favicon.ico
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css

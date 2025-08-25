@@ -71,84 +71,85 @@
             </div>
         </div>
 
-         <div class="table-section">
+
             <div class="row">
-                <div class="col-md-6 mb-4"> 
-                    <div class="table-title">Productos Vendidos</div>
-                    @if (Model.TopProductos?.Any() == true)
-                    {
-                        <table class="products-table table table-striped"> 
-                            <thead class="table-dark">
-                                <tr>
-                                    <th class="rank">#</th>
-                                    <th>Producto</th>
-                                    <th>Categoría</th>
-                                    <th class="cantidad">Cantidad Vendida</th>
-                                    <th class="monto">Monto Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (int i = 0; i < Model.TopProductos.Count; i++)
-                                {
-                                    var producto = Model.TopProductos[i];
+                <div class="col-md-6 mb-4">
+                    <div class="table-section h-100">
+                        <div class="table-title">Productos Vendidos</div>
+                        @if (Model.TopProductos?.Any() == true)
+                        {
+                            <table class="products-table table table-striped"> 
+                                <thead class="table-dark">
                                     <tr>
-                                        <td class="rank">@(i + 1)</td>
-                                        <td>@producto.NombreProducto</td>
-                                        <td>@producto.Categoria</td>
-                                        <td class="cantidad">@producto.CantidadVendida</td>
-                                        <td class="monto">S/ @producto.MontoTotal.ToString("N2")</td>
+                                        <th class="rank">#</th>
+                                        <th>Producto</th>
+                                        <th>Categoría</th>
+                                        <th class="cantidad">Cantidad Vendida</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <div class="no-data alert alert-info">No hay datos de productos vendidos para mostrar.</div>
-                    }
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.TopProductos.Count; i++)
+                                    {
+                                        var producto = Model.TopProductos[i];
+                                        <tr>
+                                            <td class="rank">@(i + 1)</td>
+                                            <td>@producto.NombreProducto</td>
+                                            <td>@producto.Categoria</td>
+                                            <td class="cantidad">@producto.CantidadVendida</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="no-data alert alert-info">No hay datos de productos vendidos para mostrar.</div>
+                        }
+                </div>
                 </div>
 
                 <!-- Segunda tabla - Columna derecha -->
                 <div class="col-md-6 mb-4">
-                    <div class="table-title">Top 3 - Productos Más Vendidos</div>
-                    @if (Model.TopProductos?.Any() == true)
-                    {
-                        <table class="products-table table table-striped">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th class="rank">#</th>
-                                    <th>Producto</th>
-                                    <th>Categoría</th>
-                                    <th class="cantidad">Cantidad Vendida</th>
-                                    <th class="monto">Monto Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (int i = 0; i < Math.Min(Model.TopProductos.Count, 3); i++) //SOLO MUSTRA EL TOP 5
-                                {
-                                    var producto = Model.TopProductos[i];
+                    <div class="table-section h-100">
+                        <div class="table-title">Top 3 - Productos Más Vendidos</div>
+                        @if (Model.TopProductos?.Any() == true)
+                        {
+                            <table class="products-table table table-striped">
+                                <thead class="table-dark">
                                     <tr>
-                                        <td class="rank">@(i + 1)</td>
-                                        <td>@producto.NombreProducto</td>
-                                        <td>@producto.Categoria</td>
-                                        <td class="cantidad">@producto.CantidadVendida</td>
-                                        <td class="monto">S/ @producto.MontoTotal.ToString("N2")</td>
+                                        <th class="rank">#</th>
+                                        <th>Producto</th>
+                                        <th>Categoría</th>
+                                        <th class="cantidad">Cantidad Vendida</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <div class="no-data alert alert-info">No hay datos de productos vendidos para mostrar.</div>
-                    }
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Math.Min(Model.TopProductos.Count, 3); i++) //SOLO MUSTRA EL TOP 5
+                                    {
+                                        var producto = Model.TopProductos[i];
+                                        <tr>
+                                            <td class="rank">@(i + 1)</td>
+                                            <td>@producto.NombreProducto</td>
+                                            <td>@producto.Categoria</td>
+                                            <td class="cantidad">@producto.CantidadVendida</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="no-data alert alert-info">No hay datos de productos vendidos para mostrar.</div>
+                        }
+                    </div>
                 </div>
         
             </div> 
-        </div>
     </div>
 
     <script>
+
+        // Gráfico de líneas: Ventas por hora
         const datosVentasPorHora = @Html.Raw(Json.Serialize(Model.VentasPorHora ?? new Dictionary<string, decimal>()));
         const datosVentasPorCategoria = @Html.Raw(Json.Serialize(Model.VentasPorCategoria ?? new Dictionary<string, decimal>()));
 
@@ -188,6 +189,7 @@
             }
         });
 
+        // Gráfico circular: Ventas por categoría
         const ctxCategoria = document.getElementById('ventasPorCategoriaChart').getContext('2d');
         const coloresCategoria = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1', '#fd7e14', '#20c997', '#6c757d', '#e83e8c'];
         const ventasPorCategoriaChart = new Chart(ctxCategoria, {
