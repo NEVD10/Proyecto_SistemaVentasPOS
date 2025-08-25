@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// Models/Usuario.cs
+using System.ComponentModel.DataAnnotations;
 
 namespace SistemaVentas.Models
 {
@@ -7,27 +8,30 @@ namespace SistemaVentas.Models
         [Key]
         public int IdUsuario { get; set; }
 
-        [Required(ErrorMessage = "El nombre de usuario es requerido.")]
-        [StringLength(20, ErrorMessage = "El nombre de usuario no puede exceder los 20 caracteres.")]
+        [Required(ErrorMessage = "El nombre de usuario es obligatorio")]
+        [StringLength(20, MinimumLength = 3, ErrorMessage = "El nombre de usuario debe tener entre 3 y 20 caracteres")]
+        [Display(Name = "Nombre de usuario")]
         public string NombreUsuario { get; set; }
 
-        [Required(ErrorMessage = "La contraseña es requerida.")]
-        [StringLength(255, ErrorMessage = "La contraseña no puede exceder los 255 caracteres.")]
-        public string PasswordHash { get; set; }
+        [Required(ErrorMessage = "La contraseña es obligatoria")]
+        [StringLength(255, ErrorMessage = "La contraseña debe tener como máximo 255 caracteres")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Contraseña")]
+        public string PasswordHash { get; set; } // Se almacenará encriptado con BCrypt
 
-        [Required(ErrorMessage = "El nombre completo es requerido.")]
-        [StringLength(100, ErrorMessage = "El nombre completo no puede exceder los 100 caracteres.")]
+        [Required(ErrorMessage = "El nombre completo es obligatorio")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "El nombre completo debe tener entre 3 y 100 caracteres")]
+        [Display(Name = "Nombre completo")]
         public string NombreCompleto { get; set; }
 
-        [Required(ErrorMessage = "El rol es requerido.")]
-        [StringLength(15, ErrorMessage = "El rol no puede exceder los 15 caracteres.")]
-        [RegularExpression(@"^(Administrador|Vendedor|Almacen)$", ErrorMessage = "El rol debe ser 'Administrador', 'Vendedor' o 'Almacen'.")]
+        [Required(ErrorMessage = "El rol es obligatorio")]
+        [StringLength(15, ErrorMessage = "El rol debe tener como máximo 15 caracteres")]
+        [RegularExpression("^(Administrador|Vendedor|Almacen)$", ErrorMessage = "El rol debe ser 'Administrador', 'Vendedor' o 'Almacen'")]
+        [Display(Name = "Rol")]
         public string Rol { get; set; }
 
-        [StringLength(100, ErrorMessage = "El email no puede exceder los 100 caracteres.")]
-        [EmailAddress(ErrorMessage = "El formato del email no es válido.")]
-        public string Email { get; set; }
-
+        [Required(ErrorMessage = "El estado es obligatorio")]
+        [Display(Name = "Estado")]
         public bool Estado { get; set; } = true;
     }
 }

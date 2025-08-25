@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.0" />
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="itext7" Version="7.2.5" />
     <PackageReference Include="MailKit" Version="4.12.0" />

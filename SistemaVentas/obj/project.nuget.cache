@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "WpSz+dwU38s=",
+  "dgSpecHash": "loFjtfKBkTI=",
   "success": true,
   "projectFilePath": "C:\\Users\\VALDIVIA\\Desktop\\Nueva carpeta\\SISTEMAVENTAS\\SISTEMAVENTAS\\SistemaVentas\\SistemaVentas.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\VALDIVIA\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\VALDIVIA\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
+    "C:\\Users\\VALDIVIA\\.nuget\\packages\\bcrypt.net-next\\4.0.0\\bcrypt.net-next.4.0.0.nupkg.sha512",
     "C:\\Users\\VALDIVIA\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\VALDIVIA\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\VALDIVIA\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",

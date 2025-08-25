@@ -9,6 +9,7 @@ C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVenta
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\SistemaVentas.pdb
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\Dapper.dll
 C:\Users\VALDIVIA\Desktop\Nueva carpeta\SISTEMAVENTAS\SISTEMAVENTAS\SistemaVentas\bin\Debug\net8.0\Humanizer.dll

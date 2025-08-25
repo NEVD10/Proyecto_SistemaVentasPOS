@@ -71,7 +71,6 @@ namespace SistemaVentas.Data
                 entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255).IsUnicode(false);
                 entity.Property(e => e.NombreCompleto).IsRequired().HasMaxLength(100).IsUnicode(false);
                 entity.Property(e => e.Rol).IsRequired().HasMaxLength(15).IsUnicode(false);
-                entity.Property(e => e.Email).HasMaxLength(100).IsUnicode(false);
                 entity.Property(e => e.Estado).HasDefaultValue(true);
             });
 
